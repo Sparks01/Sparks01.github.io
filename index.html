@@ -651,6 +651,19 @@ body {
         font-size: 18px;
     }
 }
+
+
+    .share-btn {
+    background-color: #4a6fa5;
+    display: none; /* Hidden by default, will be shown on mobile */
+}
+
+/* Show share button only on mobile devices */
+@media (max-width: 768px) {
+    .share-btn {
+        display: inline-block;
+    }
+}
              
     </style>
 </head>
@@ -898,9 +911,10 @@ body {
             <div id="loading" class="loading"></div>
             
             <div class="export-options" id="export-options" style="display: none;">
-                <button id="download-png">Download PNG</button>
-                <button id="download-jpg">Download JPG</button>
-            </div>
+    <button id="download-png">Download PNG</button>
+    <button id="download-jpg">Download JPG</button>
+    <button id="share-image" class="share-btn">Share</button>
+</div>
             
             <img id="export-preview" src="" alt="Exported image preview">
         </div>
@@ -1754,12 +1768,50 @@ function exportAsImage() {
 }
 
 // Download canvas as image
-function downloadImage(type) {
+// Modify your downloadImage function
+async function downloadImage(type) {
     const canvas = window.exportedCanvas;
     if (!canvas) {
         alert('No image generated yet. Please export first.');
         return;
     }
+    
+    // Get monster name for filename
+    const name = document.getElementById('monster-name').value || 'monster';
+    const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+    
+    // Convert canvas to blob
+    const mimeType = type === 'png' ? 'image/png' : 'image/jpeg';
+    const quality = type === 'png' ? undefined : 0.9;
+    
+    try {
+        // Use Share API if available (works great on mobile)
+        if (navigator.share && navigator.canShare) {
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, mimeType, quality));
+            const file = new File([blob], `${safeName}.${type}`, { type: mimeType });
+            
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'D&D Monster Stat Block',
+                    text: `Stat block for ${name}`
+                });
+                return;
+            }
+        }
+        
+        // Fall back to download link for desktop or if share API fails
+        const link = document.createElement('a');
+        link.download = `${safeName}.${type}`;
+        link.href = canvas.toDataURL(mimeType, quality);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (err) {
+        console.error('Error sharing or downloading:', err);
+        alert('Could not share or download the image. Please try another option.');
+    }
+}
     
     // Get monster name for filename
     const name = document.getElementById('monster-name').value || 'monster';
@@ -2091,7 +2143,42 @@ function setVh() {
 
 window.addEventListener('resize', setVh);
 setVh();
+
+// Add this to your JavaScript
+document.getElementById('share-image').addEventListener('click', async function() {
+    const canvas = window.exportedCanvas;
+    if (!canvas) {
+        alert('No image generated yet. Please export first.');
+        return;
+    }
     
+    try {
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const file = new File([blob], 'monster-stat.png', { type: 'image/png' });
+        
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: 'D&D Monster Stat Block',
+                text: 'Check out this D&D monster!'
+            });
+        } else {
+            alert('Your browser doesn\'t support sharing files.');
+        }
+    } catch (err) {
+        console.error('Error sharing:', err);
+    }
+});
+
+// Show share button in export options
+document.getElementById('export-btn').addEventListener('click', function() {
+    exportAsImage();
+    // Show the share button on mobile devices
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        document.getElementById('share-options').style.display = 'flex';
+    }
+});
+	     
 </script>
     
 </body>
