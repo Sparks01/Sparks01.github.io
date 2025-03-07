@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="manifest" href="manifest.json">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Monster Maker">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 2024 Monster Maker</title>
+    <!-- Include html2canvas library for image conversion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #622;
+            text-align: center;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .form-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .preview-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .ability-scores {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .ability-score {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ability-modifier {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .ability-save-row {
+   		 	display: flex;
+    		align-items: center;
+    		gap: 5px;
+    		margin-top: 5px;
+		}
+
+		.save-input {
+    		width: 40px;
+    		text-align: center;
+		}
+
+		.prof-checkbox-label {
+    		display: flex;
+    		align-items: center;
+    		font-size: 0.8em;
+		}
+
+		.prof-checkbox {
+    		width: auto;
+    		margin: 0 3px 0 5px;
+		}
+
+		.prof-text {
+    		font-size: 0.8em;
+    		color: #622;
+		}
+        
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: #622;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        /* Tab Styling */
+        .tab-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            background-color: #fff;
+            font-weight: bold;
+            color: #622;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Monster Style - 2024 Format */
+        .monster-frame {
+            padding: 15px;
+            background-color: #F0EDE8;
+            border: 3px double #777;
+            border-radius: 10px;
+            box-shadow: 2px 2px 8px #888888;
+            font-family: 'Open Sans', Arial, sans-serif;
+            color: #222;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .monster-frame h2 {
+            font-variant: small-caps;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 4px 0;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #622;
+            color: #222;
+            width: 100%;
+        }
+        
+        .monster-frame h2 + p {
+            color: #888;
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            font-style: italic;
+        }
+        
+        .monster-frame .vitals {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .monster-frame .vitals div {
+            margin-bottom: 2px;
+        }
+        
+        .monster-frame .vitals strong {
+            color: #622;
+            font-weight: bold;
+            min-width: 90px;
+            display: inline-block;
+        }
+        
+        .monster-frame .ability-tables {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .monster-frame .ability-table {
+            margin-bottom: 5px;
+        }
+        
+        .monster-frame .ability-table table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 2px;
+            font-size: 14px;
+        }
+        
+        .monster-frame .ability-table th {
+            color: #666;
+            font-weight: normal;
+            font-size: 10px;
+            text-align: center;
+            padding: 0 4px;
+        }
+        
+        .monster-frame .ability-table td {
+            padding: 3px 4px;
+            text-align: center;
+            background-color: #D9D0CA;
+        }
+        
+        .monster-frame .ability-table tr:nth-child(odd) td {
+            background-color: #E8E2D6;
+        }
+        
+        .monster-frame .ability-table .ability-name {
+            font-weight: bold;
+            text-align: left;
+            padding-left: 8px;
+            background-color: #E8E2D6 !important;
+            color: #622;
+            font-variant: small-caps;
+        }
+        
+        .monster-frame .stat-line {
+            margin: 4px 0;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+        
+        .monster-frame .stat-line strong {
+            color: #622;
+            font-weight: bold;
+            min-width: 110px;
+            display: inline-block;
+        }
+        
+        .monster-frame h3 {
+            color: #222;
+            margin: 15px 0 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+            font-variant: small-caps;
+            border-bottom: 1px solid #622;
+            padding-bottom: 2px;
+        }
+        
+        .monster-frame .trait-name, 
+        .monster-frame .action-name, 
+        .monster-frame .reaction-name, 
+        .monster-frame .legendary-name {
+            font-weight: bold;
+            font-style: italic;
+            color: #222;
+        }
+        
+        .monster-frame .trait, 
+        .monster-frame .action, 
+        .monster-frame .reaction, 
+        .monster-frame .legendary {
+            margin-bottom: 8px;
+        }
+        
+        /* Export preview */
+        #export-preview {
+            display: none;
+            max-width: 100%;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .loading::after {
+            content: "⟳";
+            display: inline-block;
+            font-size: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Export options */
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .export-options button {
+            background-color: #444;
+        }
+        
+        /* Markdown textarea */
+        #markdown-input {
+            min-height: 300px;
+            font-family: monospace;
+            white-space: pre;
+        }
+        
+        /* Toggle switch for dark mode */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin: 0 10px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 24px;
+            transition: .4s;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #622;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #292929;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-container,
+        body.dark-mode .preview-container {
+            background-color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #444;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        
+        body.dark-mode .tab.active {
+            background-color: #333;
+            color: #ffa07a;
+            border-color: #555;
+        }
+        
+        body.dark-mode h1 {
+            color: #ffa07a;
+        }
+        
+        /* Add styles for the homebrewery format */
+        .homebrewery-format .monster-frame {
+            /* Customized for homebrewery formatting */
+            font-family: 'Open Sans', Arial, sans-serif;
+        }
+        
+        /* Paste Monster button */
+        #paste-monster-btn {
+            background-color: #2a6;
+        }
+        
+        /* Custom formatting for the homebrewery-style paste input */
+        #paste-monster-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        #paste-monster-input {
+            width: 100%;
+            min-height: 300px;
+            margin-bottom: 15px;
+            font-family: monospace;
+        }
+        
+        body.dark-mode .modal-content {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode #paste-monster-input {
+            background-color: #444;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        
+        /* Mobile-friendly improvements */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .ability-scores {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .monster-frame .ability-tables {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  input, select, textarea {
+    font-size: 16px; /* iOS zooms in when font is smaller than 16px */
+  }
+  
+  .monster-frame {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .monster-frame h2 {
+    font-size: 20px;
+  }
+  
+  /* Make save inputs more touch-friendly */
+  .save-input {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  
+  /* More touch-friendly checkboxes */
+  .prof-checkbox-label {
+    padding: 8px;
+  }
+  
+  .prof-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Make buttons more touch-friendly */
+  button {
+    padding: 12px 16px;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Tab improvements for mobile */
+  .tab {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  /* Fix for modal on mobile */
+  .modal-content {
+    margin: 5% auto;
+    width: 90%;
+    max-width: none;
+  }
+}
+
+/* Safari iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for iOS 100vh issue */
+  .container {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Fix for iOS input zoom issue */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Fix for iOS button issue */
+  button {
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
+}
+             
+    </style>
+</head>
+<body>
+    <h1>D&D 2024 Monster Maker</h1>
+    
+    <div class="toggle-container">
+        <span>Light</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="toggle-slider"></span>
+        </label>
+        <span>Dark</span>
+    </div>
+    
+    <div class="container">
+        <div class="form-container">
+            <ul class="tab-list">
+                <li class="tab active" id="editor-tab-btn">Form Editor</li>
+                <li class="tab" id="markdown-tab-btn">Import/Export Markdown</li>
+            </ul>
+            
+            <div id="editor-tab" class="tab-content active">
+                <div class="button-group">
+                    <button type="button" id="paste-monster-btn">Paste Homebrewery Format</button>
+                </div>
+                
+                <form id="monster-form">
+                    <div class="form-group">
+                        <label for="monster-name">Monster Name</label>
+                        <input type="text" id="monster-name" value="Sphinx of Wonder">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-size">Size</label>
+                        <select id="monster-size">
+                            <option value="Tiny" selected>Tiny</option>
+                            <option value="Small">Small</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Large">Large</option>
+                            <option value="Huge">Huge</option>
+                            <option value="Gargantuan">Gargantuan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-type">Type</label>
+                        <input type="text" id="monster-type" value="Celestial">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-alignment">Alignment</label>
+                        <input type="text" id="monster-alignment" value="Lawful Good">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-ac">Armor Class</label>
+                        <input type="number" id="monster-ac" min="0" value="13">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-hp">Hit Points</label>
+                        <input type="text" id="monster-hp" value="24 (7d4 + 7)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-speed">Speed</label>
+                        <input type="text" id="monster-speed" value="20ft., Fly 40ft">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-initiative">Initiative</label>
+                        <input type="text" id="monster-initiative" value="+3 (13)">
+                    </div>
+                    
+                    <div class="form-group">
+    <label>Ability Scores</label>
+    <div class="ability-scores">
+        <div class="ability-score">
+            <label for="str">STR</label>
+            <input type="number" id="str" min="1" value="6">
+            <div class="ability-modifier" id="str-mod">-2</div>
+            <div class="ability-save-row">
+                <label for="str-save">Save:</label>
+                <input type="text" id="str-save" class="save-input" value="-2">
+                <label class="prof-checkbox-label">
+                    <input type="checkbox" id="str-prof" class="prof-checkbox">
+                    <span class="prof-text">Prof</span>
+                </label>
+            </div>
+        </div>
+        <div class="ability-score">
+            <label for="dex">DEX</label>
+            <input type="number" id="dex" min="1" value="17">
+            <div class="ability-modifier" id="dex-mod">+3</div>
+            <div class="ability-save-row">
+                <label for="dex-save">Save:</label>
+                <input type="text" id="dex-save" class="save-input" value="+3">
+                <label class="prof-checkbox-label">
+                    <input type="checkbox" id="dex-prof" class="prof-checkbox">
+                    <span class="prof-text">Prof</span>
+                </label>
+            </div>
+        </div>
+        <div class="ability-score">
+            <label for="con">CON</label>
+            <input type="number" id="con" min="1" value="13">
+            <div class="ability-modifier" id="con-mod">+1</div>
+            <div class="ability-save-row">
+                <label for="con-save">Save:</label>
+                <input type="text" id="con-save" class="save-input" value="+1">
+                <label class="prof-checkbox-label">
+                    <input type="checkbox" id="con-prof" class="prof-checkbox">
+                    <span class="prof-text">Prof</span>
+                </label>
+            </div>
+        </div>
+        <div class="ability-score">
+            <label for="int">INT</label>
+            <input type="number" id="int" min="1" value="15">
+            <div class="ability-modifier" id="int-mod">+2</div>
+            <div class="ability-save-row">
+                <label for="int-save">Save:</label>
+                <input type="text" id="int-save" class="save-input" value="+2">
+                <label class="prof-checkbox-label">
+                    <input type="checkbox" id="int-prof" class="prof-checkbox">
+                    <span class="prof-text">Prof</span>
+                </label>
+            </div>
+        </div>
+        <div class="ability-score">
+            <label for="wis">WIS</label>
+            <input type="number" id="wis" min="1" value="12">
+            <div class="ability-modifier" id="wis-mod">+1</div>
+            <div class="ability-save-row">
+                <label for="wis-save">Save:</label>
+                <input type="text" id="wis-save" class="save-input" value="+1">
+                <label class="prof-checkbox-label">
+                    <input type="checkbox" id="wis-prof" class="prof-checkbox">
+                    <span class="prof-text">Prof</span>
+                </label>
+            </div>
+        </div>
+        <div class="ability-score">
+            <label for="cha">CHA</label>
+            <input type="number" id="cha" min="1" value="11">
+            <div class="ability-modifier" id="cha-mod">+0</div>
+            <div class="ability-save-row">
+                <label for="cha-save">Save:</label>
+                <input type="text" id="cha-save" class="save-input" value="+0">
+                <label class="prof-checkbox-label">
+                    <input type="checkbox" id="cha-prof" class="prof-checkbox">
+                    <span class="prof-text">Prof</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+                    
+                    <div class="form-group">
+                        <label for="monster-saves">Saving Throws</label>
+                        <input type="text" id="monster-saves" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-skills">Skills</label>
+                        <input type="text" id="monster-skills" value="Arcana +4, Religion +4, Stealth +5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-resistances">Damage Resistances</label>
+                        <input type="text" id="monster-resistances" value="Necrotic, Psychic, Radiant">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-immunities">Damage Immunities</label>
+                        <input type="text" id="monster-immunities" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-vulnerabilities">Damage Vulnerabilities</label>
+                        <input type="text" id="monster-vulnerabilities" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-senses">Senses</label>
+                        <input type="text" id="monster-senses" value="Darkvision 60 ft., Passive Perception 11">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-languages">Languages</label>
+                        <input type="text" id="monster-languages" value="Celestial, Common">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-cr">Challenge Rating</label>
+                        <input type="text" id="monster-cr" value="1 (XP 200; PB +2)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-traits">Traits</label>
+                        <textarea id="monster-traits" rows="4">Magic Resistance. The sphinx has Advantage on saving throws against spells and other magical effects.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-actions">Actions</label>
+                        <textarea id="monster-actions" rows="4">Rend. Melee Attack Roll: +5, reach 5ft. Hit 5 (1d4 + 3) Slashing damage plus 7 (2d6) Radiant damage.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-reactions">Reactions</label>
+                        <textarea id="monster-reactions" rows="4">Burst of Ingenuity (2/Day). Trigger: The sphinx or another creature within 30 feet makes an ability check or a saving throw. Response: The sphinx adds 2 to the roll.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-legendary">Legendary Actions</label>
+                        <textarea id="monster-legendary" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="generate-btn">Generate Stat Block</button>
+                        <button type="button" id="export-btn">Export as Image</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="markdown-tab" class="tab-content">
+                <div class="form-group">
+                    <label for="markdown-input">Markdown Format</label>
+                    <textarea id="markdown-input" rows="20"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" id="import-btn">Import Markdown</button>
+                    <button type="button" id="export-markdown-btn">Export to Markdown</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <h2>Preview</h2>
+            <div id="stat-block-preview" class="monster-frame">
+                <!-- Preview will be rendered here -->
+            </div>
+            
+            <div id="loading" class="loading"></div>
+            
+            <div class="export-options" id="export-options" style="display: none;">
+                <button id="download-png">Download PNG</button>
+                <button id="download-jpg">Download JPG</button>
+            </div>
+            
+            <img id="export-preview" src="" alt="Exported image preview">
+        </div>
+    </div>
+    
+    <!-- Paste monster modal -->
+    <div id="paste-monster-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-paste-modal">&times;</span>
+            <h2>Paste Homebrewery Format Monster</h2>
+            <p>Paste your monster in Homebrewery format below:</p>
+            <textarea id="paste-monster-input" placeholder="## Monster Name *Size Type, Alignment* {{stats..."></textarea>
+            <div class="button-group">
+                <button type="button" id="process-paste-btn">Process Monster</button>
+            </div>
+        </div>
+    </div>
+    
+     <script>
+    // Simple function to calculate ability score modifier
+    function getModifier(score) {
+        return Math.floor((score - 10) / 2);
+    }
+    
+    // Format modifier with + or - sign
+    function formatModifier(mod) {
+        return mod >= 0 ? `+${mod}` : `${mod}`;
+    }
+    
+   
+    // Function to get proficiency bonus based on CR
+function getProficiencyBonus(cr) {
+    
+    
+    if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js');
+  });
+}
+    
+    
+    
+    // Parse the CR
+    let crValue = 0;
+    
+    if (typeof cr === 'string') {
+        // Handle fractions
+        if (cr.includes('/')) {
+            const parts = cr.split('/');
+            crValue = parseInt(parts[0]) / parseInt(parts[1]);
+        } 
+        // Handle CR with additional text (e.g., "5 (XP 1800)")
+        else if (cr.includes(' ')) {
+            crValue = parseFloat(cr.split(' ')[0]);
+        }
+        // Simple number as string
+        else {
+            crValue = parseFloat(cr);
+        }
+    } else {
+        crValue = cr;
+    }
+    
+    // Determine proficiency bonus based on CR
+    if (crValue < 5) return 2;
+    if (crValue < 9) return 3;
+    if (crValue < 13) return 4;
+    if (crValue < 17) return 5;
+    if (crValue < 21) return 6;
+    if (crValue < 25) return 7;
+    if (crValue < 29) return 8;
+    return 9;
+}
+    
+// Handle proficiency checkbox changes
+function initSaveProficiency() {
+    const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    
+    // Update all save proficiencies
+    function updateAllSaveProficiencies() {
+        const crInput = document.getElementById('monster-cr').value || '0';
+        const profBonus = getProficiencyBonus(crInput);
+        
+        abilities.forEach(ability => {
+            const isProficient = document.getElementById(`${ability}-prof`).checked;
+            if (isProficient) {
+                const abilityScore = parseInt(document.getElementById(ability).value) || 10;
+                const baseModifier = getModifier(abilityScore);
+                const saveInput = document.getElementById(`${ability}-save`);
+                saveInput.value = formatModifier(baseModifier + profBonus);
+            }
+        });
+    }
+    
+    // Add event listeners for each proficiency checkbox
+    abilities.forEach(ability => {
+        const checkbox = document.getElementById(`${ability}-prof`);
+        
+        checkbox.addEventListener('change', function() {
+            const crInput = document.getElementById('monster-cr').value || '0';
+            const profBonus = getProficiencyBonus(crInput);
+            const abilityScore = parseInt(document.getElementById(ability).value) || 10;
+            const baseModifier = getModifier(abilityScore);
+            const saveInput = document.getElementById(`${ability}-save`);
+            
+            if (this.checked) {
+                // Add proficiency bonus
+                saveInput.value = formatModifier(baseModifier + profBonus);
+            } else {
+                // Just use the ability modifier
+                saveInput.value = formatModifier(baseModifier);
+            }
+            
+            // Generate the stat block to reflect changes
+            generateStatBlock();
+        });
+    });
+
+    // Listen for CR changes to update proficiency bonus
+    const crInput = document.getElementById('monster-cr');
+    crInput.addEventListener('change', function() {
+        updateAllSaveProficiencies();
+        generateStatBlock(); // Add this to regenerate after CR changes
+    });
+    crInput.addEventListener('input', function() {
+        updateAllSaveProficiencies();
+        generateStatBlock(); // Add this to regenerate after CR changes
+    });
+
+    // Listen for changes to save input fields
+    abilities.forEach(ability => {
+        const saveInput = document.getElementById(`${ability}-save`);
+        saveInput.addEventListener('change', generateStatBlock);
+        saveInput.addEventListener('input', generateStatBlock);
+    });
+}	
+    
+
+    
+function updateModifiers() {
+    const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const crInput = document.getElementById('monster-cr').value || '0';
+    const profBonus = getProficiencyBonus(crInput);
+    
+    abilities.forEach(ability => {
+        const score = parseInt(document.getElementById(ability).value) || 10;
+        const mod = getModifier(score);
+        const formattedMod = formatModifier(mod);
+        
+        // Update modifier display
+        document.getElementById(`${ability}-mod`).textContent = formattedMod;
+        
+        // Update save value based on proficiency
+        const isProficient = document.getElementById(`${ability}-prof`).checked;
+        const saveInput = document.getElementById(`${ability}-save`);
+        
+        if (isProficient) {
+            saveInput.value = formatModifier(mod + profBonus);
+        } else {
+            saveInput.value = formattedMod;
+        }
+    });
+}
+
+// Function to set saving throw proficiencies based on existing data
+function setInitialSaveProficiencies() {
+    const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const crInput = document.getElementById('monster-cr').value || '0';
+    const profBonus = getProficiencyBonus(crInput);
+    
+    abilities.forEach(ability => {
+        const abilityScore = parseInt(document.getElementById(ability).value) || 10;
+        const baseModifier = getModifier(abilityScore);
+        const saveInput = document.getElementById(`${ability}-save`);
+        const saveValue = saveInput.value;
+        
+        // If save value is different from the basic modifier, it likely has proficiency
+        if (saveValue && saveValue !== formatModifier(baseModifier)) {
+            const saveBonus = parseInt(saveValue.replace('+', ''));
+            if (Math.abs(saveBonus - baseModifier) >= 2) {
+                document.getElementById(`${ability}-prof`).checked = true;
+            }
+        }
+    });
+}   
+  
+    
+    // Parse a text area into sections
+    function parseSection(text) {
+        if (!text) return [];
+        
+        const lines = text.split('\n').filter(line => line.trim());
+        return lines.map(line => {
+            const dotIndex = line.indexOf('.');
+            if (dotIndex === -1) {
+                return { name: line, description: '' };
+            }
+            
+            const name = line.substring(0, dotIndex);
+            const description = line.substring(dotIndex + 1);
+            return { 
+                name: name.trim(), 
+                description: description.trim() 
+            };
+        });
+    }
+    
+    // Generate the stat block
+    function generateStatBlock() {
+        try {
+            // Get basic info
+            const name = document.getElementById('monster-name').value || 'Monster';
+            const size = document.getElementById('monster-size').value || 'Medium';
+            const type = document.getElementById('monster-type').value || 'Beast';
+            const alignment = document.getElementById('monster-alignment').value || 'Unaligned';
+            
+            // Stats
+            const ac = document.getElementById('monster-ac').value || '10';
+            const hp = document.getElementById('monster-hp').value || '10';
+            const speed = document.getElementById('monster-speed').value || '30 ft.';
+            const initiative = document.getElementById('monster-initiative').value || '+0';
+            
+            // Ability scores
+            const str = document.getElementById('str').value || '10';
+            const dex = document.getElementById('dex').value || '10';
+            const con = document.getElementById('con').value || '10';
+            const int = document.getElementById('int').value || '10';
+            const wis = document.getElementById('wis').value || '10';
+            const cha = document.getElementById('cha').value || '10';
+            
+            // Modifiers and saves
+            const strMod = formatModifier(getModifier(parseInt(str)));
+            const dexMod = formatModifier(getModifier(parseInt(dex)));
+            const conMod = formatModifier(getModifier(parseInt(con)));
+            const intMod = formatModifier(getModifier(parseInt(int)));
+            const wisMod = formatModifier(getModifier(parseInt(wis)));
+            const chaMod = formatModifier(getModifier(parseInt(cha)));
+            
+// Get save values directly from the save inputs
+const strSave = document.getElementById('str-save').value || strMod;
+const dexSave = document.getElementById('dex-save').value || dexMod;
+const conSave = document.getElementById('con-save').value || conMod;
+const intSave = document.getElementById('int-save').value || intMod;
+const wisSave = document.getElementById('wis-save').value || wisMod;
+const chaSave = document.getElementById('cha-save').value || chaMod;
+            
+            // Additional info
+            const skills = document.getElementById('monster-skills').value || '';
+            const resistances = document.getElementById('monster-resistances').value || '';
+            const immunities = document.getElementById('monster-immunities').value || '';
+            const vulnerabilities = document.getElementById('monster-vulnerabilities').value || '';
+            const senses = document.getElementById('monster-senses').value || '';
+            const languages = document.getElementById('monster-languages').value || '';
+            const cr = document.getElementById('monster-cr').value || '';
+            
+            // Build HTML
+            let html = '';
+            
+            // Header
+            html += `<h2>${name}</h2>`;
+            html += `<p>${size} ${type}, ${alignment}</p>`;
+            
+            // Vitals
+            html += '<div class="vitals">';
+            html += `<div><strong>AC</strong> ${ac}</div>`;
+            html += `<div><strong>HP</strong> ${hp}</div>`;
+            html += `<div><strong>Speed</strong> ${speed}</div>`;
+            html += `<div><strong>Initiative</strong> ${initiative}</div>`;
+            html += '</div>';
+            
+           // Ability scores tables - 2024 style
+html += '<div class="ability-tables">';
+
+// STR/INT table
+html += '<div class="ability-table">';
+html += '<table>';
+html += '<tr><th></th><th></th><th>MOD</th><th>SAVE</th></tr>';
+html += `<tr>
+          <td class="ability-name">STR</td>
+          <td>${str}</td>
+          <td>${strMod}</td>
+          <td>${strSave}</td>
+         </tr>`;
+html += `<tr>
+          <td class="ability-name">INT</td>
+          <td>${int}</td>
+          <td>${intMod}</td>
+          <td>${intSave}</td>
+         </tr>`;
+html += '</table>';
+html += '</div>';
+
+// DEX/WIS table
+html += '<div class="ability-table">';
+html += '<table>';
+html += '<tr><th></th><th></th><th>MOD</th><th>SAVE</th></tr>';
+html += `<tr>
+          <td class="ability-name">DEX</td>
+          <td>${dex}</td>
+          <td>${dexMod}</td>
+          <td>${dexSave}</td>
+         </tr>`;
+html += `<tr>
+          <td class="ability-name">WIS</td>
+          <td>${wis}</td>
+          <td>${wisMod}</td>
+          <td>${wisSave}</td>
+         </tr>`;
+html += '</table>';
+html += '</div>';
+
+// CON/CHA table
+html += '<div class="ability-table">';
+html += '<table>';
+html += '<tr><th></th><th></th><th>MOD</th><th>SAVE</th></tr>';
+html += `<tr>
+          <td class="ability-name">CON</td>
+          <td>${con}</td>
+          <td>${conMod}</td>
+          <td>${conSave}</td>
+         </tr>`;
+html += `<tr>
+          <td class="ability-name">CHA</td>
+          <td>${cha}</td>
+          <td>${chaMod}</td>
+          <td>${chaSave}</td>
+         </tr>`;
+html += '</table>';
+html += '</div>';
+
+html += '</div>'; // close ability-tables
+            
+            // Additional stats with proper 2024 styling
+            if (skills) html += `<div class="stat-line"><strong>Skills</strong> ${skills}</div>`;
+            if (resistances) html += `<div class="stat-line"><strong>Resistances</strong> ${resistances}</div>`;
+            if (immunities) html += `<div class="stat-line"><strong>Immunities</strong> ${immunities}</div>`;
+            if (vulnerabilities) html += `<div class="stat-line"><strong>Vulnerabilities</strong> ${vulnerabilities}</div>`;
+            if (senses) html += `<div class="stat-line"><strong>Senses</strong> ${senses}</div>`;
+            if (languages) html += `<div class="stat-line"><strong>Languages</strong> ${languages}</div>`;
+            if (cr) html += `<div class="stat-line"><strong>Challenge</strong> ${cr}</div>`;
+            
+            // Traits
+            const traits = parseSection(document.getElementById('monster-traits').value);
+            if (traits.length > 0) {
+                html += '<h3>Traits</h3>';
+                traits.forEach(trait => {
+                    html += `<div class="trait"><span class="trait-name">${trait.name}.</span> ${trait.description}</div>`;
+                });
+            }
+            
+            // Actions
+            const actions = parseSection(document.getElementById('monster-actions').value);
+            if (actions.length > 0) {
+                html += '<h3>Actions</h3>';
+                actions.forEach(action => {
+                    html += `<div class="action"><span class="action-name">${action.name}.</span> ${action.description}</div>`;
+                });
+            }
+            
+            // Reactions
+            const reactions = parseSection(document.getElementById('monster-reactions').value);
+            if (reactions.length > 0) {
+                html += '<h3>Reactions</h3>';
+                reactions.forEach(reaction => {
+                    html += `<div class="reaction"><span class="reaction-name">${reaction.name}.</span> ${reaction.description}</div>`;
+                });
+            }
+            
+            // Legendary Actions
+            const legendary = parseSection(document.getElementById('monster-legendary').value);
+            if (legendary.length > 0) {
+                html += '<h3>Legendary Actions</h3>';
+                legendary.forEach(leg => {
+                    html += `<div class="legendary"><span class="legendary-name">${leg.name}.</span> ${leg.description}</div>`;
+                });
+            }
+            
+            // Set the preview
+            document.getElementById('stat-block-preview').innerHTML = html;
+            
+            // Hide the export preview if it was shown
+            document.getElementById('export-preview').style.display = 'none';
+            document.getElementById('export-options').style.display = 'none';
+            
+            return true;
+            
+        } catch (error) {
+            console.error('Error generating stat block:', error);
+            alert('An error occurred while generating the stat block. Check the console for details.');
+            return false;
+        }
+    }
+    
+ // Parse Homebrewery Format - Improved version
+function parseHomebreweryFormat(text) {
+    try {
+        // Basic parsing of the homebrewery format
+        const monsterData = {};
+        
+        // Check if it's the monster frame format
+        const isMonsterFrame = text.includes('{{monster,frame');
+        
+        // Extract monster name and type
+        const headerMatch = text.match(/##\s+([^\n]+)\s+\*([^\n]+)\*/);
+        if (headerMatch) {
+            monsterData.name = headerMatch[1].trim();
+            
+            const typeText = headerMatch[2].trim();
+            const typeMatch = typeText.match(/([^,]+), (.+)/);
+            if (typeMatch) {
+                // Extract size and type - note that some monsters have "Medium or Small" type format
+                const sizeTypeMatch = typeMatch[1].match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)(\s+or\s+(Tiny|Small|Medium|Large|Huge|Gargantuan))?\s+(.+)$/i);
+                if (sizeTypeMatch) {
+                    monsterData.size = sizeTypeMatch[1];
+                    monsterData.type = sizeTypeMatch[4];
+                } else {
+                    monsterData.size = 'Medium';
+                    monsterData.type = typeMatch[1];
+                }
+                
+                monsterData.alignment = typeMatch[2];
+            }
+        }
+        
+        // Extract stats section - handle both formats
+        let statsContent = '';
+        if (isMonsterFrame) {
+            const statsMatch = text.match(/{{stats([\s\S]*?)}}(?:\s*###|\s*}})/);
+            if (statsMatch) {
+                statsContent = statsMatch[1];
+            }
+        } else {
+            const statsMatch = text.match(/{{stats([\s\S]*?)}}/s);
+            if (statsMatch) {
+                statsContent = statsMatch[1];
+            }
+        }
+        
+        if (statsContent) {
+            // Extract vitals (AC, HP, Speed, Initiative)
+            const vitalsMatch = statsContent.match(/{{vitals([\s\S]*?)}}/);
+            if (vitalsMatch) {
+                const vitalsContent = vitalsMatch[1];
+                
+                // Extract AC
+                const acMatch = vitalsContent.match(/\*\*AC\*\*\s*::\s*([^\n]+)/);
+                if (acMatch) monsterData.ac = acMatch[1].trim();
+                
+                // Extract HP
+                const hpMatch = vitalsContent.match(/\*\*HP\*\*\s*::\s*([^\n]+)/);
+                if (hpMatch) monsterData.hp = hpMatch[1].trim();
+                
+                // Extract Speed
+                const speedMatch = vitalsContent.match(/\*\*Speed\*\*\s*::\s*([^\n]+)/);
+                if (speedMatch) monsterData.speed = speedMatch[1].trim();
+                
+                // Extract Initiative
+                const initiativeMatch = vitalsContent.match(/\*\*Initiative\*\*\s*::\s*([^\n]+)/);
+                if (initiativeMatch) monsterData.initiative = initiativeMatch[1].trim();
+            }
+            
+            // Extract ability scores - using a more flexible approach
+            const tablesMatch = statsContent.match(/{{tables([\s\S]*?)}}/);
+            if (tablesMatch) {
+                const tablesContent = tablesMatch[1];
+                
+                // Create a more flexible regex that can match ability scores in any order
+            const abilityRegex = /\|(Str|Dex|Con|Int|Wis|Cha)\|\s*(\d+)\s*\|\s*([+-]\d+|--\d+)\s*\|\s*([+-]\d+|--\d+|\+)\s*\|/gi;                
+            let abilityMatch;
+                
+                while ((abilityMatch = abilityRegex.exec(tablesContent)) !== null) {
+                    const ability = abilityMatch[1].toLowerCase();
+                    const score = abilityMatch[2];
+                    const mod = abilityMatch[3].replace('--', '-');
+                    let save = abilityMatch[4].replace('--', '-');
+                    
+                    // If save is just "+", use the same value as the modifier
+                    if (save === '+') save = mod;
+                    
+                    monsterData[ability] = score;
+                    monsterData[`${ability}Mod`] = mod;
+                    monsterData[`${ability}Save`] = save;
+                }
+            }
+            
+            // Extract additional stats
+            // Skills
+            const skillsMatch = statsContent.match(/\*\*Skills\*\*\s*::\s*([^\n]+)/);
+            if (skillsMatch) monsterData.skills = skillsMatch[1].trim();
+            
+            // Gear (new field)
+            const gearMatch = statsContent.match(/\*\*Gear\*\*\s*::\s*([^\n]+)/);
+            if (gearMatch) monsterData.gear = gearMatch[1].trim();
+            
+            // Resistances
+            const resistancesMatch = statsContent.match(/\*\*Resistances\*\*\s*::\s*([^\n]+)/);
+            if (resistancesMatch) monsterData.resistances = resistancesMatch[1].trim();
+            
+            // Immunities
+            const immunitiesMatch = statsContent.match(/\*\*Immunities\*\*\s*::\s*([^\n]+)/);
+            if (immunitiesMatch) monsterData.immunities = immunitiesMatch[1].trim();
+            
+            // Vulnerabilities
+            const vulnerabilitiesMatch = statsContent.match(/\*\*Vulnerabilities\*\*\s*::\s*([^\n]+)/);
+            if (vulnerabilitiesMatch) monsterData.vulnerabilities = vulnerabilitiesMatch[1].trim();
+            
+            // Senses
+            const sensesMatch = statsContent.match(/\*\*Senses\*\*\s*::\s*([^\n]+)/);
+            if (sensesMatch) monsterData.senses = sensesMatch[1].trim();
+            
+            // Languages
+            const languagesMatch = statsContent.match(/\*\*Languages\*\*\s*::\s*([^\n]+)/);
+            if (languagesMatch) monsterData.languages = languagesMatch[1].trim();
+            
+            // CR
+            const crMatch = statsContent.match(/\*\*CR\*\*\s*::\s*([^\n]+)/);
+            if (crMatch) monsterData.cr = crMatch[1].trim();
+        }
+        
+        // Extract sections - adjust regex to work with both formats
+        function extractSection(sectionName) {
+            let sectionRegex;
+            
+            if (isMonsterFrame) {
+                // For monster frame format
+                sectionRegex = new RegExp(`### ${sectionName}([\\s\\S]*?)(?:###|}}|$)`, 'i');
+            } else {
+                // For standard format
+                sectionRegex = new RegExp(`### ${sectionName}([\\s\\S]*?)(?:###|$)`, 'i');
+            }
+            
+            const sectionMatch = text.match(sectionRegex);
+            
+            if (sectionMatch) {
+                // Process the section content
+                let content = sectionMatch[1].trim();
+                
+                // Handle special formatting
+                content = content.replace(/\*\*\*(.*?)\.\*\*\*/g, '$1.');
+                
+                return content;
+            }
+            
+            return '';
+        }
+        
+        // Extract all major sections
+        monsterData.traits = extractSection('Traits');
+        monsterData.actions = extractSection('Actions');
+        monsterData.bonusActions = extractSection('Bonus Actions'); // New section for bonus actions
+        monsterData.reactions = extractSection('Reactions');
+        monsterData.legendary = extractSection('Legendary Actions');
+        
+        return monsterData;
+    } catch (error) {
+        console.error('Error parsing homebrewery format:', error);
+        return null;
+    }
+}
+
+// Update apply data function to handle the new fields
+function applyHomebreweryData(data) {
+    if (!data) return false;
+    
+    // Basic info
+    if (data.name) document.getElementById('monster-name').value = data.name;
+    if (data.size) document.getElementById('monster-size').value = data.size;
+    if (data.type) document.getElementById('monster-type').value = data.type;
+    if (data.alignment) document.getElementById('monster-alignment').value = data.alignment;
+    
+    // Stats
+    if (data.ac) document.getElementById('monster-ac').value = data.ac;
+    if (data.hp) document.getElementById('monster-hp').value = data.hp;
+    if (data.speed) document.getElementById('monster-speed').value = data.speed;
+    if (data.initiative) document.getElementById('monster-initiative').value = data.initiative;
+    
+    // Ability scores
+    if (data.str) document.getElementById('str').value = data.str;
+    if (data.dex) document.getElementById('dex').value = data.dex;
+    if (data.con) document.getElementById('con').value = data.con;
+    if (data.int) document.getElementById('int').value = data.int;
+    if (data.wis) document.getElementById('wis').value = data.wis;
+    if (data.cha) document.getElementById('cha').value = data.cha;
+    
+    // Construct saves string
+    const saves = [];
+    if (data.strSave && data.strSave !== data.strMod) saves.push(`Str ${data.strSave}`);
+    if (data.dexSave && data.dexSave !== data.dexMod) saves.push(`Dex ${data.dexSave}`);
+    if (data.conSave && data.conSave !== data.conMod) saves.push(`Con ${data.conSave}`);
+    if (data.intSave && data.intSave !== data.intMod) saves.push(`Int ${data.intSave}`);
+    if (data.wisSave && data.wisSave !== data.wisMod) saves.push(`Wis ${data.wisSave}`);
+    if (data.chaSave && data.chaSave !== data.chaMod) saves.push(`Cha ${data.chaSave}`);
+    
+    if (saves.length > 0) document.getElementById('monster-saves').value = saves.join(', ');
+    
+    // Additional info
+    if (data.skills) document.getElementById('monster-skills').value = data.skills;
+    if (data.resistances) document.getElementById('monster-resistances').value = data.resistances;
+    if (data.immunities) document.getElementById('monster-immunities').value = data.immunities;
+    if (data.vulnerabilities) document.getElementById('monster-vulnerabilities').value = data.vulnerabilities;
+    if (data.senses) document.getElementById('monster-senses').value = data.senses;
+    if (data.languages) document.getElementById('monster-languages').value = data.languages;
+    if (data.cr) document.getElementById('monster-cr').value = data.cr;
+    
+    // Traits, actions, etc.
+    if (data.traits) document.getElementById('monster-traits').value = data.traits;
+    
+    // Combine actions and bonus actions if both are present
+    let actionsText = data.actions || '';
+    if (data.bonusActions) {
+        // Add a label for Bonus Actions
+        if (actionsText) actionsText += '\n\n';
+        actionsText += 'Bonus Actions. ' + data.bonusActions.trim();
+    }
+    
+    if (actionsText) document.getElementById('monster-actions').value = actionsText;
+    if (data.reactions) document.getElementById('monster-reactions').value = data.reactions;
+    if (data.legendary) document.getElementById('monster-legendary').value = data.legendary;
+    
+    // Update modifiers
+    updateModifiers();
+    
+    return true;
+}
+
+// Modified exportToMarkdown function to support the monster frame format
+function exportToMarkdown() {
+    try {
+        // Get basic info
+        const name = document.getElementById('monster-name').value || 'Monster';
+        const size = document.getElementById('monster-size').value || 'Medium';
+        const type = document.getElementById('monster-type').value || 'Beast';
+        const alignment = document.getElementById('monster-alignment').value || 'Unaligned';
+        
+        // Stats
+        const ac = document.getElementById('monster-ac').value || '10';
+        const hp = document.getElementById('monster-hp').value || '10';
+        const speed = document.getElementById('monster-speed').value || '30 ft.';
+        const initiative = document.getElementById('monster-initiative').value || '+0';
+        
+        // Ability scores
+        const str = document.getElementById('str').value || '10';
+        const dex = document.getElementById('dex').value || '10';
+        const con = document.getElementById('con').value || '10';
+        const int = document.getElementById('int').value || '10';
+        const wis = document.getElementById('wis').value || '10';
+        const cha = document.getElementById('cha').value || '10';
+        
+        // Modifiers
+        const strMod = formatModifier(getModifier(parseInt(str)));
+        const dexMod = formatModifier(getModifier(parseInt(dex)));
+        const conMod = formatModifier(getModifier(parseInt(con)));
+        const intMod = formatModifier(getModifier(parseInt(int)));
+        const wisMod = formatModifier(getModifier(parseInt(wis)));
+        const chaMod = formatModifier(getModifier(parseInt(cha)));
+        
+   		// Get save values directly from the save inputs
+		const strSave = document.getElementById('str-save').value || strMod;
+		const dexSave = document.getElementById('dex-save').value || dexMod;
+		const conSave = document.getElementById('con-save').value || conMod;
+		const intSave = document.getElementById('int-save').value || intMod;
+		const wisSave = document.getElementById('wis-save').value || wisMod;
+		const chaSave = document.getElementById('cha-save').value || chaMod;
+        
+        // Additional info
+        const skills = document.getElementById('monster-skills').value || '';
+        const resistances = document.getElementById('monster-resistances').value || '';
+        const immunities = document.getElementById('monster-immunities').value || '';
+        const vulnerabilities = document.getElementById('monster-vulnerabilities').value || '';
+        const senses = document.getElementById('monster-senses').value || '';
+        const languages = document.getElementById('monster-languages').value || '';
+        const cr = document.getElementById('monster-cr').value || '';
+        
+        // Create markdown - monster frame format
+        let markdown = `{{monster,frame\n## ${name}\n*${size} ${type}, ${alignment}*\n`;
+        
+        // Stats
+        markdown += `{{stats\n`;
+        
+        // Vitals
+        markdown += `{{vitals\n`;
+        markdown += `**AC**         :: ${ac}\n`;
+        markdown += `**HP**         :: ${hp}\n`;
+        markdown += `**Speed**      :: ${speed}\n`;
+        markdown += `\\column\n`;
+        markdown += `**Initiative** :: ${initiative}\n`;
+        markdown += `}}\n\n`;
+        
+        // Ability scores tables - 2024 homebrewery style
+        markdown += `{{tables  \n`;
+
+		// Table 1 - STR/INT (match the format in the example)
+		markdown += `|   |   |  MOD | SAVE |  \n`;
+		markdown += `|:--|:-:|:----:|:----:|  \n`;
+		markdown += `|Str| ${str}|  ${strMod}  |  ${strSave}  |  \n`;
+		markdown += `|Int| ${int}|  ${intMod}  |  ${intSave}  |  \n`;
+
+        // Table 2 - DEX/WIS (match the format in the example)
+		markdown += `|   |   |  MOD | SAVE |  \n`;
+		markdown += `|:--|:-:|:----:|:----:|  \n`;
+		markdown += `|Dex| ${dex}|  ${dexMod}  |  ${dexSave}  |  \n`;
+		markdown += `|Wis| ${wis}|  ${wisMod}  |  ${wisSave}  |  \n`;
+
+		// Table 3 - CON/CHA (match the format in the example)
+		markdown += `|   |   |  MOD | SAVE |  \n`;
+		markdown += `|:--|:-:|:----:|:----:|  \n`;
+		markdown += `|Con| ${con}|  ${conMod}  |  ${conSave}  |  \n`;
+		markdown += `|Cha| ${cha}|  ${chaMod}  |  ${chaSave}  |  \n`;
+		markdown += `}}\n`;
+        
+        // Additional stats
+        if (skills) markdown += `**Skills**      :: ${skills}\n`;
+        if (resistances) markdown += `**Resistances** :: ${resistances}\n`;
+        if (immunities) markdown += `**Immunities**  :: ${immunities}\n`;
+        if (vulnerabilities) markdown += `**Vulnerabilities** :: ${vulnerabilities}\n`;
+        if (senses) markdown += `**Senses**      :: ${senses}\n`;
+        if (languages) markdown += `**Languages**   :: ${languages}\n`;
+        if (cr) markdown += `**CR**          :: ${cr}\n`;
+        
+        markdown += `}}\n\n`;
+        
+        // Parse the actions text to separate regular actions and bonus actions
+        const actionsText = document.getElementById('monster-actions').value || '';
+        let regularActions = '';
+        let bonusActions = '';
+        
+        // Look for a "Bonus Actions." section within the actions text
+        const bonusActionsMatch = actionsText.match(/Bonus Actions\.\s*([\s\S]*)/);
+        if (bonusActionsMatch) {
+            // Split the actions text
+            const splitIndex = actionsText.indexOf('Bonus Actions.');
+            regularActions = actionsText.substring(0, splitIndex).trim();
+            bonusActions = bonusActionsMatch[1].trim();
+        } else {
+            regularActions = actionsText;
+        }
+        
+        // Traits
+        const traits = parseSection(document.getElementById('monster-traits').value);
+        if (traits.length > 0) {
+            markdown += `### Traits\n`;
+            traits.forEach(trait => {
+                markdown += `***${trait.name}.*** ${trait.description}\n`;
+            });
+            markdown += `\n`;
+        }
+        
+        // Actions
+        const actions = parseSection(regularActions);
+        if (actions.length > 0) {
+            markdown += `### Actions\n`;
+            actions.forEach(action => {
+                markdown += `***${action.name}.*** ${action.description}\n`;
+            });
+            markdown += `\n`;
+        }
+        
+        // Bonus Actions
+        if (bonusActions) {
+            const bonusActionItems = parseSection(bonusActions);
+            if (bonusActionItems.length > 0) {
+                markdown += `### Bonus Actions\n`;
+                bonusActionItems.forEach(action => {
+                    markdown += `***${action.name}.*** ${action.description}\n`;
+                });
+                markdown += `\n`;
+            }
+        }
+        
+        // Reactions
+        const reactions = parseSection(document.getElementById('monster-reactions').value);
+        if (reactions.length > 0) {
+            markdown += `### Reactions\n`;
+            reactions.forEach(reaction => {
+                markdown += `***${reaction.name}.*** ${reaction.description}\n`;
+            });
+            markdown += `\n`;
+        }
+        
+        // Legendary Actions
+        const legendary = parseSection(document.getElementById('monster-legendary').value);
+        if (legendary.length > 0) {
+            markdown += `### Legendary Actions\n`;
+            legendary.forEach(leg => {
+                markdown += `***${leg.name}.*** ${leg.description}\n`;
+            });
+            markdown += `\n`;
+        }
+        
+        markdown += `}}`; // Close monster frame
+        
+        // Set the markdown textarea
+        document.getElementById('markdown-input').value = markdown;
+        
+        // Switch to markdown tab
+        document.getElementById('markdown-tab-btn').click();
+        
+        return markdown;
+        
+    } catch (error) {
+        console.error('Error generating markdown:', error);
+        alert('An error occurred while generating the markdown. Check the console for details.');
+        return '';
+    }
+}
+
+// Export stat block as image
+function exportAsImage() {
+    try {
+        // Show loading indicator
+        document.getElementById('loading').style.display = 'block';
+        
+        // Get the stat block element
+        const statBlock = document.getElementById('stat-block-preview');
+        
+        // Use html2canvas to convert to image
+        html2canvas(statBlock, {
+            backgroundColor: null,
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            // Hide loading indicator
+            document.getElementById('loading').style.display = 'none';
+            
+            // Convert canvas to data URL (PNG format by default)
+            const dataUrl = canvas.toDataURL('image/png');
+            
+            // Display preview
+            const previewImg = document.getElementById('export-preview');
+            previewImg.src = dataUrl;
+            previewImg.style.display = 'block';
+            
+            // Store canvas in variable for download buttons
+            window.exportedCanvas = canvas;
+            
+            // Show export options
+            document.getElementById('export-options').style.display = 'flex';
+            
+        }).catch(error => {
+            console.error('Error exporting image:', error);
+            document.getElementById('loading').style.display = 'none';
+            alert('Failed to export image. Check console for details.');
+        });
+        
+    } catch (error) {
+        console.error('Error in export function:', error);
+        document.getElementById('loading').style.display = 'none';
+        alert('An unexpected error occurred. Check console for details.');
+    }
+}
+
+// Download canvas as image
+function downloadImage(type) {
+    const canvas = window.exportedCanvas;
+    if (!canvas) {
+        alert('No image generated yet. Please export first.');
+        return;
+    }
+    
+    // Get monster name for filename
+    const name = document.getElementById('monster-name').value || 'monster';
+    const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+    
+    // Create download link
+    const link = document.createElement('a');
+    
+    if (type === 'png') {
+        link.download = `${safeName}.png`;
+        link.href = canvas.toDataURL('image/png');
+    } else if (type === 'jpg') {
+        link.download = `${safeName}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.9); // 0.9 quality
+    }
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Toggle Modal
+function togglePasteMonsterModal() {
+    const modal = document.getElementById('paste-monster-modal');
+    modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+    
+    if (modal.style.display === 'block') {
+        document.getElementById('paste-monster-input').focus();
+    }
+}
+
+// Process pasted homebrewery format monster
+function processPastedMonster() {
+    try {
+        const pastedText = document.getElementById('paste-monster-input').value;
+        
+        if (!pastedText.trim()) {
+            alert('Please paste a monster in Homebrewery format.');
+            return;
+        }
+        
+        const monsterData = parseHomebreweryFormat(pastedText);
+        
+        if (!monsterData) {
+            alert('Failed to parse the monster data. Please check the format.');
+            return;
+        }
+        
+        // Apply data to form
+        if (applyHomebreweryData(monsterData)) {
+            // Close modal
+            document.getElementById('paste-monster-modal').style.display = 'none';
+            
+            // Generate stat block
+            generateStatBlock();
+            
+            // Switch to editor tab
+            document.getElementById('editor-tab-btn').click();
+        } else {
+            alert('Failed to apply monster data. Please check the format.');
+        }
+        
+    } catch (error) {
+        console.error('Error processing pasted monster:', error);
+        alert('An error occurred while processing the monster. Check the console for details.');
+    }
+}
+    
+    // Import from markdown format
+    function importFromMarkdown() {
+        try {
+            const markdown = document.getElementById('markdown-input').value;
+            if (!markdown.trim()) {
+                alert('Please enter some markdown to import.');
+                return false;
+            }
+            
+            // Try to parse as homebrewery format first
+            const monsterData = parseHomebreweryFormat(markdown);
+            
+            if (monsterData && Object.keys(monsterData).length > 0) {
+                // Apply data to form
+                if (applyHomebreweryData(monsterData)) {
+                    // Generate stat block
+                    generateStatBlock();
+                    
+                    // Switch to editor tab
+                    document.getElementById('editor-tab-btn').click();
+                    
+                    return true;
+                }
+            }
+            
+            // If homebrewery parsing fails, try the legacy markdown format
+            // Basic info
+            const nameMatch = markdown.match(/##\s+([^\n]+)/);
+            const typeMatch = markdown.match(/\*([^\n]+)\*/);
+            
+            if (nameMatch) {
+                document.getElementById('monster-name').value = nameMatch[1].trim();
+            }
+            
+            if (typeMatch) {
+                const typeInfo = typeMatch[1].trim();
+                const sizeTypeRegex = /^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+([^,]+),\s+(.+)$/i;
+                const sizeTypeMatch = typeInfo.match(sizeTypeRegex);
+                
+                if (sizeTypeMatch) {
+                    document.getElementById('monster-size').value = sizeTypeMatch[1];
+                    document.getElementById('monster-type').value = sizeTypeMatch[2];
+                    document.getElementById('monster-alignment').value = sizeTypeMatch[3];
+                }
+            }
+            
+            // Stats
+            const acMatch = markdown.match(/\*\*AC\*\*\s+([^\n]+)/);
+            const hpMatch = markdown.match(/\*\*HP\*\*\s+([^\n]+)/);
+            const speedMatch = markdown.match(/\*\*Speed\*\*\s+([^\n]+)/);
+            const initiativeMatch = markdown.match(/\*\*Initiative\*\*\s+([^\n]+)/);
+            
+            if (acMatch) document.getElementById('monster-ac').value = acMatch[1].trim();
+            if (hpMatch) document.getElementById('monster-hp').value = hpMatch[1].trim();
+            if (speedMatch) document.getElementById('monster-speed').value = speedMatch[1].trim();
+            if (initiativeMatch) document.getElementById('monster-initiative').value = initiativeMatch[1].trim();
+            
+            // Ability scores and saves
+            const strMatch = markdown.match(/\|\s*STR\s*\|\s*(\d+)\s*\|\s*([+-]\d+)\s*\|\s*([+-]\d+)\s*\|/i);
+            const dexMatch = markdown.match(/\|\s*DEX\s*\|\s*(\d+)\s*\|\s*([+-]\d+)\s*\|\s*([+-]\d+)\s*\|/i);
+            const conMatch = markdown.match(/\|\s*CON\s*\|\s*(\d+)\s*\|\s*([+-]\d+)\s*\|\s*([+-]\d+)\s*\|/i);
+            const intMatch = markdown.match(/\|\s*INT\s*\|\s*(\d+)\s*\|\s*([+-]\d+)\s*\|\s*([+-]\d+)\s*\|/i);
+            const wisMatch = markdown.match(/\|\s*WIS\s*\|\s*(\d+)\s*\|\s*([+-]\d+)\s*\|\s*([+-]\d+)\s*\|/i);
+            const chaMatch = markdown.match(/\|\s*CHA\s*\|\s*(\d+)\s*\|\s*([+-]\d+)\s*\|\s*([+-]\d+)\s*\|/i);
+            
+            // Set ability scores
+            if (strMatch) document.getElementById('str').value = strMatch[1];
+            if (dexMatch) document.getElementById('dex').value = dexMatch[1];
+            if (conMatch) document.getElementById('con').value = conMatch[1];
+            if (intMatch) document.getElementById('int').value = intMatch[1];
+            if (wisMatch) document.getElementById('wis').value = wisMatch[1];
+            if (chaMatch) document.getElementById('cha').value = chaMatch[1];
+            
+            // Update modifiers
+            updateModifiers();
+            
+            // Detect saving throws that differ from ability modifiers
+            const savesArray = [];
+            
+            if (strMatch) {
+                const mod = formatModifier(getModifier(parseInt(strMatch[1])));
+                if (mod !== strMatch[3].trim()) savesArray.push(`Str ${strMatch[3].trim()}`);
+            }
+            
+            if (dexMatch) {
+                const mod = formatModifier(getModifier(parseInt(dexMatch[1])));
+                if (mod !== dexMatch[3].trim()) savesArray.push(`Dex ${dexMatch[3].trim()}`);
+            }
+            
+            if (conMatch) {
+                const mod = formatModifier(getModifier(parseInt(conMatch[1])));
+                if (mod !== conMatch[3].trim()) savesArray.push(`Con ${conMatch[3].trim()}`);
+            }
+            
+            if (intMatch) {
+                const mod = formatModifier(getModifier(parseInt(intMatch[1])));
+                if (mod !== intMatch[3].trim()) savesArray.push(`Int ${intMatch[3].trim()}`);
+            }
+            
+            if (wisMatch) {
+                const mod = formatModifier(getModifier(parseInt(wisMatch[1])));
+                if (mod !== wisMatch[3].trim()) savesArray.push(`Wis ${wisMatch[3].trim()}`);
+            }
+            
+            if (chaMatch) {
+                const mod = formatModifier(getModifier(parseInt(chaMatch[1])));
+                if (mod !== chaMatch[3].trim()) savesArray.push(`Cha ${chaMatch[3].trim()}`);
+            }
+            
+            if (savesArray.length > 0) {
+                document.getElementById('monster-saves').value = savesArray.join(', ');
+            } else {
+                document.getElementById('monster-saves').value = '';
+            }
+            
+            // Additional info
+            const skillsMatch = markdown.match(/\*\*Skills\*\*\s+([^\n]+)/);
+            const resistancesMatch = markdown.match(/\*\*Resistances\*\*\s+([^\n]+)/);
+            const immunitiesMatch = markdown.match(/\*\*Immunities\*\*\s+([^\n]+)/);
+            const vulnerabilitiesMatch = markdown.match(/\*\*Vulnerabilities\*\*\s+([^\n]+)/);
+            const sensesMatch = markdown.match(/\*\*Senses\*\*\s+([^\n]+)/);
+            const languagesMatch = markdown.match(/\*\*Languages\*\*\s+([^\n]+)/);
+            const crMatch = markdown.match(/\*\*Challenge\*\*\s+([^\n]+)/);
+            
+            if (skillsMatch) document.getElementById('monster-skills').value = skillsMatch[1].trim();
+            if (resistancesMatch) document.getElementById('monster-resistances').value = resistancesMatch[1].trim();
+            if (immunitiesMatch) document.getElementById('monster-immunities').value = immunitiesMatch[1].trim();
+            if (vulnerabilitiesMatch) document.getElementById('monster-vulnerabilities').value = vulnerabilitiesMatch[1].trim();
+            if (sensesMatch) document.getElementById('monster-senses').value = sensesMatch[1].trim();
+            if (languagesMatch) document.getElementById('monster-languages').value = languagesMatch[1].trim();
+            if (crMatch) document.getElementById('monster-cr').value = crMatch[1].trim();
+            
+            // Extract sections (traits, actions, etc.)
+            function extractSection(sectionName) {
+                const sectionRegex = new RegExp(`### ${sectionName}\\s*\\n\\n([\\s\\S]*?)(?=###|$)`, 'i');
+                const sectionMatch = markdown.match(sectionRegex);
+                
+                if (sectionMatch) {
+                    let sectionText = '';
+                    const traitRegex = /\*\*\*(.*?)\.\*\*\*\s+([\s\S]*?)(?=\n\n\*\*\*|\n\n###|$)/g;
+                    let traitMatch;
+                    
+                    while ((traitMatch = traitRegex.exec(sectionMatch[1])) !== null) {
+                        sectionText += `${traitMatch[1]}. ${traitMatch[2].trim()}\n`;
+                    }
+                    
+                    return sectionText;
+                }
+                
+                return '';
+            }
+            
+            document.getElementById('monster-traits').value = extractSection('Traits');
+            document.getElementById('monster-actions').value = extractSection('Actions');
+            document.getElementById('monster-reactions').value = extractSection('Reactions');
+            document.getElementById('monster-legendary').value = extractSection('Legendary Actions');
+            
+            // Switch to editor tab and generate preview
+            document.getElementById('editor-tab-btn').click();
+            generateStatBlock();
+            
+            return true;
+            
+        } catch (error) {
+            console.error('Error importing markdown:', error);
+            alert('An error occurred while importing the markdown. Check the console for details.');
+            return false;
+        }
+    }
+    
+    // Toggle dark mode
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+       
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (savedDarkMode) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('dark-mode-toggle').checked = true;
+        }
+        
+        // Dark mode toggle
+        document.getElementById('dark-mode-toggle').addEventListener('change', toggleDarkMode);
+        
+        // Initialize saving throw proficiency handlers
+		initSaveProficiency();
+		setInitialSaveProficiencies();
+        
+        // Tab switching
+        document.getElementById('editor-tab-btn').addEventListener('click', function() {
+            document.getElementById('editor-tab-btn').classList.add('active');
+            document.getElementById('markdown-tab-btn').classList.remove('active');
+            document.getElementById('editor-tab').classList.add('active');
+            document.getElementById('markdown-tab').classList.remove('active');
+        });
+        
+        document.getElementById('markdown-tab-btn').addEventListener('click', function() {
+            document.getElementById('markdown-tab-btn').classList.add('active');
+            document.getElementById('editor-tab-btn').classList.remove('active');
+            document.getElementById('markdown-tab').classList.add('active');
+            document.getElementById('editor-tab').classList.remove('active');
+        });
+        
+        // Update modifiers when ability scores change
+        const abilityInputs = document.querySelectorAll('.ability-score input');
+        abilityInputs.forEach(input => {
+            input.addEventListener('input', updateModifiers);
+        });
+        
+        // Generate button click handler
+        document.getElementById('generate-btn').addEventListener('click', generateStatBlock);
+        
+        // Export button click handler
+        document.getElementById('export-btn').addEventListener('click', exportAsImage);
+        
+        // Download buttons
+        document.getElementById('download-png').addEventListener('click', () => downloadImage('png'));
+        document.getElementById('download-jpg').addEventListener('click', () => downloadImage('jpg'));
+        
+        // Import/Export markdown
+        document.getElementById('import-btn').addEventListener('click', importFromMarkdown);
+        document.getElementById('export-markdown-btn').addEventListener('click', exportToMarkdown);
+        
+        // Paste monster modal
+        document.getElementById('paste-monster-btn').addEventListener('click', togglePasteMonsterModal);
+        document.getElementById('close-paste-modal').addEventListener('click', togglePasteMonsterModal);
+        document.getElementById('process-paste-btn').addEventListener('click', processPastedMonster);
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('paste-monster-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Initial generation
+        updateModifiers();
+        generateStatBlock();
+    });
+    
+    // Fix for iOS to prevent zooming on input focus
+document.addEventListener('touchstart', function(event) {
+  if (event.touches.length > 1) {
+    event.preventDefault();
+  }
+}, { passive: false });
+
+// Fix for iOS viewport height issues
+function setVh() {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+window.addEventListener('resize', setVh);
+setVh();
+    
+</script>
+    
+</body>
+</html>
+               
