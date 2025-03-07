@@ -944,19 +944,8 @@ body {
         return mod >= 0 ? `+${mod}` : `${mod}`;
     }
     
-   
-    // Function to get proficiency bonus based on CR
+   // Function to get proficiency bonus based on CR
 function getProficiencyBonus(cr) {
-    
-    
-    if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js');
-  });
-}
-    
-    
-    
     // Parse the CR
     let crValue = 0;
     
@@ -988,6 +977,46 @@ function getProficiencyBonus(cr) {
     if (crValue < 29) return 8;
     return 9;
 }
+
+// Move service worker registration outside of any function
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+    });
+}  
+ 
+    // Parse the CR
+    let crValue = 0;
+    
+    if (typeof cr === 'string') {
+        // Handle fractions
+        if (cr.includes('/')) {
+            const parts = cr.split('/');
+            crValue = parseInt(parts[0]) / parseInt(parts[1]);
+        } 
+        // Handle CR with additional text (e.g., "5 (XP 1800)")
+        else if (cr.includes(' ')) {
+            crValue = parseFloat(cr.split(' ')[0]);
+        }
+        // Simple number as string
+        else {
+            crValue = parseFloat(cr);
+        }
+    } else {
+        crValue = cr;
+    }
+    
+    // Determine proficiency bonus based on CR
+    if (crValue < 5) return 2;
+    if (crValue < 9) return 3;
+    if (crValue < 13) return 4;
+    if (crValue < 17) return 5;
+    if (crValue < 21) return 6;
+    if (crValue < 25) return 7;
+    if (crValue < 29) return 8;
+    return 9;
+
+
     
 // Handle proficiency checkbox changes
 function initSaveProficiency() {
@@ -1811,6 +1840,7 @@ async function downloadImage(type) {
         alert('Could not share or download the image. Please try another option.');
     }
 }
+
  {    
     // Trigger download
     document.body.appendChild(link);
@@ -2162,7 +2192,7 @@ document.getElementById('export-btn').addEventListener('click', function() {
     exportAsImage();
     // Show the share button on mobile devices
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        document.getElementById('share-options').style.display = 'flex';
+        document.getElementById('export-options').style.display = 'flex';
     }
 });
 	     
