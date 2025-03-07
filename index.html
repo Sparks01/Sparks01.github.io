@@ -7,6 +7,12 @@
 	<meta name="apple-mobile-web-app-title" content="Monster Maker">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta charset="UTF-8">
+	<!-- D&D PHB Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic" rel="stylesheet" type="text/css">
+	
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D&D 2024 Monster Maker</title>
     <!-- Include html2canvas library for image conversion -->
@@ -577,6 +583,73 @@
     -webkit-appearance: none;
     border-radius: 4px;
   }
+}
+
+/* Font styles for D&D PHB look */
+body {
+    font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+}
+
+.monster-frame {
+    font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+}
+
+.monster-frame h2 {
+    font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+.monster-frame h3 {
+    font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
+    font-variant: small-caps;
+    font-weight: bold;
+    border-bottom: 1px solid #622;
+}
+
+.monster-frame .trait-name, 
+.monster-frame .action-name, 
+.monster-frame .reaction-name, 
+.monster-frame .legendary-name {
+    font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.monster-frame .ability-table .ability-name {
+    font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+/* More authentic coloring */
+.monster-frame {
+    background-color: #FDF1DC;
+    border: 1px solid #DDD;
+    box-shadow: 0 0 5px #DDD;
+}
+
+.monster-frame .ability-table td {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.monster-frame .ability-table tr:nth-child(odd) td {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.monster-frame .ability-table .ability-name {
+    background-color: transparent !important;
+}
+
+/* Improved PHB look for mobile */
+@media (max-width: 768px) {
+    .monster-frame h2 {
+        font-size: 22px;
+    }
+    
+    .monster-frame h3 {
+        font-size: 18px;
+    }
 }
              
     </style>
