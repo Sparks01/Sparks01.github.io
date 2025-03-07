@@ -1768,7 +1768,6 @@ function exportAsImage() {
 }
 
 // Download canvas as image
-// Modify your downloadImage function
 async function downloadImage(type) {
     const canvas = window.exportedCanvas;
     if (!canvas) {
@@ -1812,22 +1811,7 @@ async function downloadImage(type) {
         alert('Could not share or download the image. Please try another option.');
     }
 }
-    
-    // Get monster name for filename
-    const name = document.getElementById('monster-name').value || 'monster';
-    const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-    
-    // Create download link
-    const link = document.createElement('a');
-    
-    if (type === 'png') {
-        link.download = `${safeName}.png`;
-        link.href = canvas.toDataURL('image/png');
-    } else if (type === 'jpg') {
-        link.download = `${safeName}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.9); // 0.9 quality
-    }
-    
+     
     // Trigger download
     document.body.appendChild(link);
     link.click();
@@ -2169,6 +2153,9 @@ document.getElementById('share-image').addEventListener('click', async function(
         console.error('Error sharing:', err);
     }
 });
+
+// The standard export button handler is already set up earlier in your code
+// Just make sure it shows the export options which already include the share button
 
 // Show share button in export options
 document.getElementById('export-btn').addEventListener('click', function() {
