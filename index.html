@@ -984,38 +984,6 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js');
     });
 }  
- 
-    // Parse the CR
-    let crValue = 0;
-    
-    if (typeof cr === 'string') {
-        // Handle fractions
-        if (cr.includes('/')) {
-            const parts = cr.split('/');
-            crValue = parseInt(parts[0]) / parseInt(parts[1]);
-        } 
-        // Handle CR with additional text (e.g., "5 (XP 1800)")
-        else if (cr.includes(' ')) {
-            crValue = parseFloat(cr.split(' ')[0]);
-        }
-        // Simple number as string
-        else {
-            crValue = parseFloat(cr);
-        }
-    } else {
-        crValue = cr;
-    }
-    
-    // Determine proficiency bonus based on CR
-    if (crValue < 5) return 2;
-    if (crValue < 9) return 3;
-    if (crValue < 13) return 4;
-    if (crValue < 17) return 5;
-    if (crValue < 21) return 6;
-    if (crValue < 25) return 7;
-    if (crValue < 29) return 8;
-    return 9;
-
 
     
 // Handle proficiency checkbox changes
@@ -1841,12 +1809,6 @@ async function downloadImage(type) {
     }
 }
 
- {    
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
 
 // Toggle Modal
 function togglePasteMonsterModal() {
