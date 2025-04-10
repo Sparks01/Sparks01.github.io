@@ -1545,13 +1545,13 @@ function exportToMarkdown() {
         const size = document.getElementById('monster-size').value || 'Medium';
         const type = document.getElementById('monster-type').value || 'Beast';
         const alignment = document.getElementById('monster-alignment').value || 'Unaligned';
-        
+
         // Stats
         const ac = document.getElementById('monster-ac').value || '10';
         const hp = document.getElementById('monster-hp').value || '10';
         const speed = document.getElementById('monster-speed').value || '30 ft.';
         const initiative = document.getElementById('monster-initiative').value || '+0';
-        
+
         // Ability scores
         const str = document.getElementById('str').value || '10';
         const dex = document.getElementById('dex').value || '10';
@@ -1559,7 +1559,7 @@ function exportToMarkdown() {
         const int = document.getElementById('int').value || '10';
         const wis = document.getElementById('wis').value || '10';
         const cha = document.getElementById('cha').value || '10';
-        
+
         // Modifiers
         const strMod = formatModifier(getModifier(parseInt(str)));
         const dexMod = formatModifier(getModifier(parseInt(dex)));
@@ -1567,15 +1567,15 @@ function exportToMarkdown() {
         const intMod = formatModifier(getModifier(parseInt(int)));
         const wisMod = formatModifier(getModifier(parseInt(wis)));
         const chaMod = formatModifier(getModifier(parseInt(cha)));
-        
-   		// Get save values directly from the save inputs
-		const strSave = document.getElementById('str-save').value || strMod;
-		const dexSave = document.getElementById('dex-save').value || dexMod;
-		const conSave = document.getElementById('con-save').value || conMod;
-		const intSave = document.getElementById('int-save').value || intMod;
-		const wisSave = document.getElementById('wis-save').value || wisMod;
-		const chaSave = document.getElementById('cha-save').value || chaMod;
-        
+
+        // Get save values directly from the save inputs
+        const strSave = document.getElementById('str-save').value || strMod;
+        const dexSave = document.getElementById('dex-save').value || dexMod;
+        const conSave = document.getElementById('con-save').value || conMod;
+        const intSave = document.getElementById('int-save').value || intMod;
+        const wisSave = document.getElementById('wis-save').value || wisMod;
+        const chaSave = document.getElementById('cha-save').value || chaMod;
+
         // Additional info
         const skills = document.getElementById('monster-skills').value || '';
         const resistances = document.getElementById('monster-resistances').value || '';
@@ -1584,133 +1584,150 @@ function exportToMarkdown() {
         const senses = document.getElementById('monster-senses').value || '';
         const languages = document.getElementById('monster-languages').value || '';
         const cr = document.getElementById('monster-cr').value || '';
-        
+        // Condition immunities (ensure the element exists in your HTML if you use this)
+        const conditionImmunitiesInput = document.getElementById('monster-condition-immunities');
+        const conditionImmunities = conditionImmunitiesInput ? conditionImmunitiesInput.value : '';
+
+
         // Create markdown - monster frame format
-        let markdown = `{{monster,frame\n## ${name}\n*${size} ${type}, ${alignment}*\n`;
-        
+        let markdown = `{{monster,frame\n## ${name}\n*${size} ${type}, ${alignment}*\n\n`; // Added newline
+
         // Stats
         markdown += `{{stats\n`;
-        
+
         // Vitals
         markdown += `{{vitals\n`;
         markdown += `**AC**         :: ${ac}\n`;
         markdown += `**HP**         :: ${hp}\n`;
         markdown += `**Speed**      :: ${speed}\n`;
-        markdown += `\\column\n`;
+        markdown += `\\column\n`; // Keep \column for vitals
         markdown += `**Initiative** :: ${initiative}\n`;
-        markdown += `}}\n\n`;
-        
+        markdown += `}}\n\n`; // End Vitals, add newline
+
         // Ability scores tables - 2024 homebrewery style
-        markdown += `{{tables  \n`;
+        markdown += `{{tables\n`; // Start tables block
 
-		// Table 1 - STR/INT (match the format in the example)
-		markdown += `|   |   |  MOD | SAVE |  \n`;
-		markdown += `|:--|:-:|:----:|:----:|  \n`;
-		markdown += `|Str| ${str}|  ${strMod}  |  ${strSave}  |  \n`;
-		markdown += `|Int| ${int}|  ${intMod}  |  ${intSave}  |  \n`;
+        // Table 1: STR/INT
+        markdown += `|   |   | MOD  | SAVE |\n`;
+        markdown += `|:--|:-:|:----:|:----:|\n`;
+        markdown += `|Str| ${str.padEnd(2)}| ${strMod.padEnd(3)} | ${strSave.padEnd(3)} |\n`;
+        markdown += `|Int| ${int.padEnd(2)}| ${intMod.padEnd(3)} | ${intSave.padEnd(3)} |\n`;
+        // --- CHANGE HERE ---
+        markdown += `\n`; // Add blank line separator instead of \column
 
-        // Table 2 - DEX/WIS (match the format in the example)
-		markdown += `|   |   |  MOD | SAVE |  \n`;
-		markdown += `|:--|:-:|:----:|:----:|  \n`;
-		markdown += `|Dex| ${dex}|  ${dexMod}  |  ${dexSave}  |  \n`;
-		markdown += `|Wis| ${wis}|  ${wisMod}  |  ${wisSave}  |  \n`;
+        // Table 2: DEX/WIS
+        markdown += `|   |   | MOD  | SAVE |\n`;
+        markdown += `|:--|:-:|:----:|:----:|\n`;
+        markdown += `|Dex| ${dex.padEnd(2)}| ${dexMod.padEnd(3)} | ${dexSave.padEnd(3)} |\n`;
+        markdown += `|Wis| ${wis.padEnd(2)}| ${wisMod.padEnd(3)} | ${wisSave.padEnd(3)} |\n`;
+        // --- CHANGE HERE ---
+        markdown += `\n`; // Add blank line separator instead of \column
 
-		// Table 3 - CON/CHA (match the format in the example)
-		markdown += `|   |   |  MOD | SAVE |  \n`;
-		markdown += `|:--|:-:|:----:|:----:|  \n`;
-		markdown += `|Con| ${con}|  ${conMod}  |  ${conSave}  |  \n`;
-		markdown += `|Cha| ${cha}|  ${chaMod}  |  ${chaSave}  |  \n`;
-		markdown += `}}\n`;
-        
-        // Additional stats
-        if (skills) markdown += `**Skills**      :: ${skills}\n`;
-        if (resistances) markdown += `**Resistances** :: ${resistances}\n`;
-        if (immunities) markdown += `**Immunities**  :: ${immunities}\n`;
-        if (vulnerabilities) markdown += `**Vulnerabilities** :: ${vulnerabilities}\n`;
-        if (senses) markdown += `**Senses**      :: ${senses}\n`;
-        if (languages) markdown += `**Languages**   :: ${languages}\n`;
-        if (cr) markdown += `**CR**          :: ${cr}\n`;
-        
-        markdown += `}}\n\n`;
-        
-        // Parse the actions text to separate regular actions and bonus actions
-        const actionsText = document.getElementById('monster-actions').value || '';
-        let regularActions = '';
-        let bonusActions = '';
-        
-        // Look for a "Bonus Actions." section within the actions text
-        const bonusActionsMatch = actionsText.match(/Bonus Actions\.\s*([\s\S]*)/);
-        if (bonusActionsMatch) {
-            // Split the actions text
-            const splitIndex = actionsText.indexOf('Bonus Actions.');
-            regularActions = actionsText.substring(0, splitIndex).trim();
-            bonusActions = bonusActionsMatch[1].trim();
-        } else {
-            regularActions = actionsText;
+        // Table 3: CON/CHA
+        markdown += `|   |   | MOD  | SAVE |\n`;
+        markdown += `|:--|:-:|:----:|:----:|\n`;
+        markdown += `|Con| ${con.padEnd(2)}| ${conMod.padEnd(3)} | ${conSave.padEnd(3)} |\n`;
+        markdown += `|Cha| ${cha.padEnd(2)}| ${chaMod.padEnd(3)} | ${chaSave.padEnd(3)} |\n`;
+        // No blank line or column needed after the last table
+
+        markdown += `}}\n\n`; // End Tables block, add newline
+
+        // Other Stats within Stats Block
+        if (skills) markdown += `**Skills**             :: ${skills}\n`;
+        if (resistances) markdown += `**Resistances**        :: ${resistances}\n`;
+        if (immunities) markdown += `**Immunities**         :: ${immunities}\n`;
+        if (conditionImmunities) markdown += `**Condition Immunities** :: ${conditionImmunities}\n`; // Added
+        if (vulnerabilities) markdown += `**Vulnerabilities**    :: ${vulnerabilities}\n`;
+        if (senses) markdown += `**Senses**             :: ${senses}\n`;
+        if (languages) markdown += `**Languages**          :: ${languages}\n`;
+        if (cr) markdown += `**Challenge**          :: ${cr}\n`; // Changed from CR
+
+        markdown += `}}\n\n`; // End Stats Block, add newline
+
+        // Format Section Helper (Ensure parseSectionText is defined globally)
+        function formatSectionForMarkdown(title, sectionContent) {
+            const items = parseSection(sectionContent); // Using the global parseSection function
+            if (items.length === 0) return '';
+            let sectionMd = `### ${title}\n`;
+            items.forEach(item => {
+                // Ensure description exists before trying to use it
+                const desc = item.description ? ` ${item.description}` : '';
+                sectionMd += `***${item.name}.***${desc}\n`;
+            });
+            return sectionMd + '\n'; // Add trailing newline
         }
-        
+
         // Traits
-        const traits = parseSection(document.getElementById('monster-traits').value);
-        if (traits.length > 0) {
-            markdown += `### Traits\n`;
-            traits.forEach(trait => {
-                markdown += `***${trait.name}.*** ${trait.description}\n`;
-            });
-            markdown += `\n`;
+        markdown += formatSectionForMarkdown('Traits', document.getElementById('monster-traits').value);
+
+        // Split Actions/Bonus Actions for Export
+        const actionsInputText = document.getElementById('monster-actions').value || '';
+        let regularActionsText = actionsInputText;
+        let bonusActionsText = '';
+        const bonusActionMarker = "\nBonus Actions."; // Simple marker
+        const bonusActionIndex = actionsInputText.indexOf(bonusActionMarker);
+
+        if (bonusActionIndex !== -1) {
+            regularActionsText = actionsInputText.substring(0, bonusActionIndex).trim();
+            // Get text after the marker, removing the marker itself
+            bonusActionsText = actionsInputText.substring(bonusActionIndex + bonusActionMarker.length).trim();
+             // Ensure Bonus Actions text doesn't start with another "Bonus Actions."
+             if(bonusActionsText.toLowerCase().startsWith("bonus actions.")){
+                  bonusActionsText = bonusActionsText.substring("bonus actions.".length).trim();
+             }
+
+        } else {
+            // Check if the whole text starts with Bonus Actions.
+             if (actionsInputText.trim().toLowerCase().startsWith("bonus actions.")) {
+                  regularActionsText = ''; // No regular actions
+                  bonusActionsText = actionsInputText.substring("bonus actions.".length).trim();
+             }
         }
-        
+
         // Actions
-        const actions = parseSection(regularActions);
-        if (actions.length > 0) {
-            markdown += `### Actions\n`;
-            actions.forEach(action => {
-                markdown += `***${action.name}.*** ${action.description}\n`;
-            });
-            markdown += `\n`;
-        }
-        
+        markdown += formatSectionForMarkdown('Actions', regularActionsText);
+
         // Bonus Actions
-        if (bonusActions) {
-            const bonusActionItems = parseSection(bonusActions);
-            if (bonusActionItems.length > 0) {
-                markdown += `### Bonus Actions\n`;
-                bonusActionItems.forEach(action => {
-                    markdown += `***${action.name}.*** ${action.description}\n`;
-                });
-                markdown += `\n`;
-            }
-        }
-        
+        markdown += formatSectionForMarkdown('Bonus Actions', bonusActionsText);
+
+
         // Reactions
-        const reactions = parseSection(document.getElementById('monster-reactions').value);
-        if (reactions.length > 0) {
-            markdown += `### Reactions\n`;
-            reactions.forEach(reaction => {
-                markdown += `***${reaction.name}.*** ${reaction.description}\n`;
-            });
-            markdown += `\n`;
-        }
-        
+        markdown += formatSectionForMarkdown('Reactions', document.getElementById('monster-reactions').value);
+
         // Legendary Actions
-        const legendary = parseSection(document.getElementById('monster-legendary').value);
-        if (legendary.length > 0) {
-            markdown += `### Legendary Actions\n`;
-            legendary.forEach(leg => {
-                markdown += `***${leg.name}.*** ${leg.description}\n`;
-            });
-            markdown += `\n`;
-        }
-        
+         const legendaryInputText = document.getElementById('monster-legendary').value;
+         const legendaryItems = parseSection(legendaryInputText); // Use global parseSection
+         if (legendaryItems.length > 0) {
+             markdown += `### Legendary Actions\n`;
+             // Simple check: if the first item doesn't look like a standard "Name. Description"
+             const firstItemIsIntro = !legendaryItems[0].description && legendaryItems[0].name && !legendaryItems[0].name.includes('.');
+             if (firstItemIsIntro) {
+                 markdown += `${legendaryItems[0].name}\n`; // Assume the first item's 'name' is the intro paragraph
+                 legendaryItems.slice(1).forEach(item => { // Format remaining items
+                      const desc = item.description ? ` ${item.description}` : '';
+                      markdown += `***${item.name}.***${desc}\n`;
+                 });
+             } else {
+                  // No intro text, format all items normally
+                  legendaryItems.forEach(item => {
+                       const desc = item.description ? ` ${item.description}` : '';
+                       markdown += `***${item.name}.***${desc}\n`;
+                  });
+             }
+             markdown += '\n';
+         }
+
+
         markdown += `}}`; // Close monster frame
-        
+
         // Set the markdown textarea
         document.getElementById('markdown-input').value = markdown;
-        
+
         // Switch to markdown tab
         document.getElementById('markdown-tab-btn').click();
-        
+
         return markdown;
-        
+
     } catch (error) {
         console.error('Error generating markdown:', error);
         alert('An error occurred while generating the markdown. Check the console for details.');
