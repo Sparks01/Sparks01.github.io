@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 2024 Monster Card Printer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+<style>
+    @import url('https://db.onlinewebfonts.com/c/424b8aede804aa7c4ccf56674de5ca09?family=Scaly+Sans+Remake');
+    @font-face {
+        font-family: 'ScalySans';
+        src: url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.eot");
+        src: url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.eot?#iefix")format("embedded-opentype"),
+        url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.woff2")format("woff2"),
+        url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.woff")format("woff"),
+        url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.ttf")format("truetype"),
+        url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.svg#Scaly Sans Remake")format("svg");
+    }
+    @font-face {
+        font-family: 'ScalySansCaps';
+        src: url('https://cdn.jsdelivr.net/gh/naturalcrit/homebrewery@master/themes/fonts/5e/Scaly%20Sans%20Caps.woff2') format('woff2');
+    }
+
+    :root {
+        --card-width: 5in;
+        --card-height: 3.5in;
+        /* Classic Theme (Default) */
+        --font-header: 'ScalySansCaps', 'Oswald', 'Arial Black', sans-serif;
+        --font-body: 'ScalySans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+        --accent-color: #6f1f11;
+        --background-color: #ffffff; 
+        --page-background: #f0f0f0;
+        --border-color: #d6d0c9;
+        --table-red: #ece5de;
+        --table-yellow: #f3ede3;
+        --table-purple: #e8e4e1;
+        --table-green: #e5e8e2;
+        --shadow-color: rgba(0, 0, 0, 0.15);
+        --text-color: #000;
+        --light-text-color: #888;
+        --button-color: #6f1f11;
+        --button-add-color: #28a745;
+    }
+
+    body.theme-modern {
+        /* Modern Theme Override */
+        --font-header: 'Poppins', sans-serif;
+        --font-body: 'Roboto', sans-serif;
+        --accent-color: #3366cc; /* Royal Blue */
+        --background-color: #ffffff;
+        --page-background: #f0f2f5;
+        --border-color: #dee2e6;
+        --table-red: #f8f9fa;
+        --table-yellow: #f8f9fa;
+        --table-purple: #f8f9fa;
+        --table-green: #f8f9fa;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --text-color: #212529;
+        --light-text-color: #6c757d;
+        --button-color: #3366cc;
+        --button-add-color: #3366cc;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body { font-family: var(--font-body); background: var(--page-background); margin: 0; padding: 20px; line-height: 1.4; color: var(--text-color); }
+    
+    .main-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; align-items: start; max-width: 1600px; margin: 0 auto;}
+    .sidebar { position: sticky; top: 20px; background: var(--background-color); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px var(--shadow-color); }
+    .control-group { margin-bottom: 20px; }
+    .control-group h3 { font-family: var(--font-header); color: var(--text-color); margin: 0 0 15px 0; font-size: 1.2em; font-weight: 600; border-bottom: 1.5px solid var(--border-color); padding-bottom: 2px; display: flex; align-items: center; }
+    .control-group h3 i { color: var(--accent-color); margin-right: 10px; }
+    .control-group button { background: var(--button-color); color: white; border: none; padding: 10px 15px; margin-top: 5px; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: var(--font-body); transition: background-color 0.2s; width: 100%; }
+    #theme-toggle-btn, #print-layout-toggle-btn { background-color: #6c757d; }
+    .control-group button:hover { opacity: 0.9; }
+    .control-group button i { margin-right: 8px; }
+    .button-group { display: flex; gap: 10px; }
+    .search-box { width: 100%; padding: 10px; border: 1px solid var(--border-color); background-color: var(--background-color); color: var(--text-color); border-radius: 4px; font-family: var(--font-body); margin-bottom: 10px; }
+    .monster-browser { background: var(--background-color); border-radius: 8px; max-height: 55vh; overflow-y: auto; border: 1px solid var(--border-color); }
+    .monster-item { padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background-color 0.2s; display: flex; justify-content: space-between; align-items: center; }
+    .monster-item:hover { background: var(--table-yellow); }
+    .monster-info h4 { margin: 0 0 4px 0; font-weight: 700; }
+    .monster-info p { margin: 0; color: var(--light-text-color); font-size: 0.9em; }
+    .add-monster-btn { background: var(--button-add-color); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+    .add-monster-btn:hover { opacity: 0.9; }
+
+    #card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    #empty-state { padding: 40px; text-align: center; color: var(--light-text-color); font-style: italic; font-size: 1.2em; width: 100%;}
+    .card-wrapper { position: relative; }
+    .card-pair { display: contents; } 
+    
+    .monster-card {
+        width: var(--card-width); height: var(--card-height); background: var(--background-color);
+        border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 10px;
+        line-height: 1.3; position: relative;
+        box-shadow: 0 1px 4px var(--shadow-color); color: var(--text-color);
+        margin-bottom: 10px; 
+    }
+    .card-wrapper .monster-card:last-child { margin-bottom: 0; }
+    
+    .monster-card::before { content: ""; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px; border: 1px solid var(--border-color); border-radius: 7px; pointer-events: none; }
+    .delete-card-btn { position: absolute; top: -10px; right: -10px; background: var(--accent-color); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; z-index: 10; font-size: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    
+    .monster-name { font-family: var(--font-header); font-size: 20px; font-weight: 600; color: var(--accent-color); margin: 0 0 3px 0; line-height: 1.1; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; text-transform: uppercase; min-height: 24px; }
+    .monster-type { font-style: italic; color: var(--light-text-color); margin: 3px 0 10px 0; font-size: 10px; min-height: 1.3em; }
+    .left-column, .right-column { display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .basic-stats { margin-bottom: 8px; font-size: 9px; display: flex; justify-content: space-between; align-items: flex-start; line-height: 1.5; }
+    .basic-stats-group { display: flex; flex-direction: column; }
+    .stat-line { display: flex; align-items: baseline; }
+    .stat-line strong { color: var(--accent-color); font-family: var(--font-header); text-transform: uppercase; font-size: 0.9em; font-weight: 600; margin-right: 0.5em; width: 3.5em; }
+    .stat-line span { font-weight: bold; }
+    .initiative-stat strong { width: auto; }
+    .ability-scores { margin-bottom: 8px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 6px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .ability-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .ability-table th { color: var(--light-text-color); font-weight: normal; font-size: 6px; text-align: center; padding: 0; height: 8px; }
+    .ability-table td { padding: 1px 2px; text-align: center; height: 12px; font-size: 8px; font-weight: bold; }
+    .ability-table td.ability-name { color: var(--accent-color); text-transform: uppercase; text-align: left; padding-left: 3px; font-size: 7px; width: 22px; }
+    .ability-table tr:nth-child(odd) td { background-color: var(--table-purple); }
+    .ability-table tr:nth-child(odd) td.ability-name { background-color: var(--table-green); }
+    .ability-table tr:nth-child(even) td { background-color: var(--table-red); }
+    .ability-table tr:nth-child(even) td.ability-name { background-color: var(--table-yellow); }
+    .secondary-stats { font-size: 7.5px; margin-bottom: 8px; line-height: 1.4; }
+    .stat-block-line { display: flex; }
+    .stat-label { color: var(--accent-color); font-family: var(--font-header); text-transform: uppercase; font-size: 0.9em; font-weight: 600; margin-right: 0.5em; flex-shrink: 0; }
+    .section-header { font-weight: 600; color: var(--accent-color); font-size: 11px; margin-bottom: 4px; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; font-family: var(--font-header); text-transform: uppercase; letter-spacing: 0.5px; }
+    .action-item { margin-bottom: 4px; font-size: 8px; line-height: 1.3; word-break: break-word; }
+    .action-name { font-weight: bold; font-style: italic; }
+    .challenge-rating { position: absolute; top: 0px; right: 0px; background: var(--background-color); color: var(--accent-color); border: 1.5px solid var(--accent-color); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; font-family: var(--font-header); }
+    .monster-card.back .left-column { display: none; }
+    .monster-card.back { grid-template-columns: 1fr; }
+    .monster-card.back .monster-name { font-size: 16px; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; margin-bottom: 8px; }
+    .overflow-indicator { font-size: 8px; color: var(--light-text-color); font-style: italic; position: absolute; bottom: 0; left: 0; }
+    
+    @media print {
+        body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .sidebar, .delete-card-btn { display: none; }
+        .main-container { display: block; }
+        #card-container { display: block; }
+        .monster-card { box-shadow: none; transform: none; margin-bottom: 0; border: none; }
+        .monster-card::before { display: none; }
+
+        /* --- Full Page Layout --- */
+        body:not(.print-direct-to-card) .card-wrapper { page-break-inside: avoid; break-inside: avoid; margin: 0 auto 0.2in auto; }
+        body:not(.print-direct-to-card) .card-wrapper.page-break-after { page-break-after: always; }
+        
+        /* --- Direct to Card Layout --- */
+        body.print-direct-to-card { padding: 0; }
+        body.print-direct-to-card .card-wrapper { page-break-after: always; margin: 0; }
+        @page {
+            size: 5in 3.5in;
+            margin: 0.1in;
+        }
+    }
+</style>
+</head>
+<body class="theme-modern">
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="control-group">
+                <h3><i class="fas fa-paint-brush"></i> Theme</h3>
+                <button id="theme-toggle-btn" onclick="toggleTheme()"><i class="fas fa-exchange-alt"></i> Toggle Theme</button>
+            </div>
+            <div class="control-group">
+                <h3><i class="fas fa-tools"></i> Tools</h3>
+                <div class="button-group">
+                    <button onclick="addCustomMonster()"><i class="fas fa-plus"></i> Add Custom</button>
+                    <button onclick="clearAllCards()"><i class="fas fa-trash-alt"></i> Clear All</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <h3><i class="fas fa-print"></i> Print Options</h3>
+                <button id="print-layout-toggle-btn" onclick="togglePrintLayout()"><i class="fas fa-file-alt"></i> <span id="print-layout-text"></span></button>
+                <button onclick="printAllCards()" style="width: 100%;"><i class="fas fa-print"></i> Print All Cards</button>
+            </div>
+            <div class="control-group">
+                <h3><i class="fas fa-list"></i> Monster Browser</h3>
+                 <input type="text" id="monster-search" class="search-box" placeholder="Search monsters..." oninput="displayMonsterBrowser()">
+                <div class="monster-browser" id="monster-browser">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </aside>
+
+        <main id="card-container">
+            <!-- Populated by JS -->
+        </main>
+    </div>
+
+<script>
+// --- START OF MONSTER DATA ---
+const monsterJsonData = [
+	
+// --- END OF MONSTER DATA ---
+
+
+let monstersData = [];
+let selectedCards = [];
+
+function processMonsterData(data) {
+    if (!Array.isArray(data)) {
+        console.error("Embedded monster data is not a valid array.");
+        return;
+    }
+    monstersData = data.filter(m => m && m.name);
+    if(monstersData.length === 0){
+        document.getElementById('monster-browser').innerHTML = `<div style="padding: 20px; text-align: center; color: #6c757d;">No monster data found. Edit the HTML to add your monster JSON.</div>`;
+        return;
+    }
+    displayMonsterBrowser();
+}
+
+function displayMonsterBrowser() {
+    const browser = document.getElementById('monster-browser');
+    const searchTerm = document.getElementById('monster-search').value.toLowerCase();
+    
+    let filteredMonsters = monstersData.sort((a, b) => a.name.localeCompare(b.name));
+    if (searchTerm) {
+        filteredMonsters = monstersData.filter(m => m.name?.toLowerCase().includes(searchTerm) || getMonsterType(m)?.toLowerCase().includes(searchTerm));
+    }
+    
+    browser.innerHTML = filteredMonsters.map(monster => `
+        <div class="monster-item">
+            <div class="monster-info">
+                <h4>${monster.name}</h4><p>${getMonsterType(monster)} | CR ${getChallengeRating(monster)}</p>
+            </div>
+            <button class="add-monster-btn" onclick="addMonsterCard('${monster.name}')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+    `).join('');
+}
+
+function updateEmptyState() {
+    const container = document.getElementById('card-container');
+    const emptyState = document.getElementById('empty-state');
+    if (selectedCards.length === 0) {
+        if (!emptyState) {
+            container.innerHTML = `<div id="empty-state">Your monster cards will appear here.<br>Use the browser on the left to add monsters.</div>`;
+        }
+    } else {
+        if (emptyState) {
+            emptyState.remove();
+        }
+    }
+}
+
+function addMonsterCard(monsterName) {
+    if (selectedCards.some(c => c.name === monsterName)) return;
+    const monster = monstersData.find(m => m.name === monsterName);
+    if (monster) {
+        const newCard = {...monster, id: Date.now()};
+        selectedCards.push(newCard);
+        renderSingleCard(newCard);
+    }
+}
+
+function deleteCard(cardId) {
+    selectedCards = selectedCards.filter(c => c.id != cardId);
+    const cardWrapperEl = document.querySelector(`.card-wrapper[data-id="${cardId}"]`);
+    if (cardWrapperEl) cardWrapperEl.remove();
+    updateEmptyState();
+}
+
+function clearAllCards() {
+    selectedCards = [];
+    document.getElementById('card-container').innerHTML = '';
+    updateEmptyState();
+}
+
+function renderSingleCard(monster) {
+    updateEmptyState();
+    const container = document.getElementById('card-container');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card-wrapper';
+    wrapper.setAttribute('data-id', monster.id);
+
+    const cardPair = document.createElement('div');
+    cardPair.className = 'card-pair';
+    cardPair.innerHTML = generateCardHTML(monster, 'front');
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-card-btn';
+    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+    deleteBtn.title = 'Remove Monster';
+    deleteBtn.onclick = () => deleteCard(monster.id);
+    
+    wrapper.appendChild(cardPair);
+    wrapper.appendChild(deleteBtn);
+    container.appendChild(wrapper);
+
+    setTimeout(() => checkForOverflow(monster, cardPair), 250); 
+}
+
+function checkForOverflow(monster, cardPair) {
+    const frontCard = cardPair.querySelector('.monster-card.front');
+    if (!frontCard || monster.isCustom) return;
+
+    const rightColumn = frontCard.querySelector('.right-column');
+    if (rightColumn.scrollHeight > rightColumn.clientHeight) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = generateCardHTML(monster, 'back');
+        const backCard = tempDiv.firstChild;
+        cardPair.appendChild(backCard);
+        
+        const frontRightCol = frontCard.querySelector('.right-column');
+        const backRightCol = backCard.querySelector('.right-column');
+        
+        let hasOverflowed = false;
+        while (frontRightCol.scrollHeight > frontRightCol.clientHeight) {
+            const sectionsOnFront = frontRightCol.querySelectorAll('.actions-section');
+            if (sectionsOnFront.length <= 1 && hasOverflowed) break; 
+            
+            const sectionToMove = sectionsOnFront[sectionsOnFront.length - 1];
+            backRightCol.prepend(sectionToMove);
+            hasOverflowed = true;
+        }
+
+        if (hasOverflowed) {
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'monster-name';
+            titleDiv.textContent = `${monster.name || 'Unnamed Monster'} (CONTINUED)`;
+            backRightCol.prepend(titleDiv);
+
+            const indicator = document.createElement('div');
+            indicator.className = 'overflow-indicator';
+            indicator.textContent = '(continued...)';
+            frontRightCol.appendChild(indicator);
+        } else {
+            backCard.remove(); 
+        }
+    }
+}
+
+function generateCardHTML(monster, side = 'front') {
+    if (side === 'back') {
+        return `<div class="monster-card back"><div class="right-column"></div></div>`;
+    }
+
+    const abilities = { str: monster.str, dex: monster.dex, con: monster.con, int: monster.int, wis: monster.wis, cha: monster.cha };
+    const getSave = (abi) => monster.isCustom ? "___" : (monster.save?.[abi] || formatModifier(getModifier(abilities[abi])));
+
+    return `
+        <div class="monster-card front">
+            <div class="left-column">
+                <div class="monster-name">${monster.name}</div>
+                <div class="monster-type">${monster.isCustom ? '' : `${getSize(monster)} ${getMonsterType(monster)}, ${getAlignment(monster)}`}</div>
+                <div class="basic-stats">
+                    <div class="basic-stats-group">
+                        <div class="stat-line"><strong>AC</strong> <span>${getArmorClass(monster)}</span></div>
+                        <div class="stat-line"><strong>HP</strong> <span>${getHitPoints(monster)}</span></div>
+                        <div class="stat-line"><strong>Speed</strong> <span>${getSpeed(monster)}</span></div>
+                    </div>
+                    <div class="stat-line initiative-stat"><strong>Initiative</strong> <span>${getInitiative(monster)}</span></div>
+                </div>
+                <div class="ability-scores">
+                    ${['str', 'dex', 'con', 'int', 'wis', 'cha'].reduce((acc, abi, i) => {
+                        const row = `<tr><td class="ability-name">${abi}</td><td>${formatModifier(getModifier(abilities[abi]))}</td><td>${getSave(abi)}</td></tr>`;
+                        if (i % 3 === 0) acc.push([row]); else acc[acc.length - 1].push(row);
+                        return acc;
+                    }, []).map(group => `<table class="ability-table"><thead><tr><th></th><th>MOD</th><th>SAVE</th></tr></thead><tbody>${group.join('')}</tbody></table>`).join('')}
+                </div>
+                <div class="secondary-stats">
+                    ${monster.isCustom ? '' : `
+                        ${formatSkills(monster) ? `<div class="stat-block-line"><span class="stat-label">Skills</span> <span>${formatSkills(monster)}</span></div>` : ''}
+                        ${formatImmunities(monster) ? `<div class="stat-block-line"><span class="stat-label">Immunities</span> <span>${formatImmunities(monster)}</span></div>` : ''}
+                        ${formatSenses(monster) ? `<div class="stat-block-line"><span class="stat-label">Senses</span> <span>${formatSenses(monster)}</span></div>` : ''}
+                        ${formatLanguages(monster) ? `<div class="stat-block-line"><span class="stat-label">Languages</span> <span>${formatLanguages(monster)}</span></div>` : ''}
+                    `}
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="challenge-rating">${getChallengeRating(monster)}</div>
+                ${monster.isCustom ? '' : ['trait', 'action', 'reaction', 'legendary', 'spellcasting'].map(type => {
+                    if (!monster[type] || !monster[type].length) return '';
+                    let headerText = type.charAt(0).toUpperCase() + type.slice(1);
+                    if (type === 'legendary') { headerText = 'Legendary Actions'; }
+                    else if (type !== 'spellcasting') { headerText += 's'; }
+
+                    return `<div class="actions-section" data-section-type="${type}">
+                            <div class="section-header">${headerText}</div>
+                            ${monster[type].map(item => `<div class="action-item">
+                                ${item.name ? `<span class="action-name">${item.name}.</span>` : ''}
+                                ${cleanDescription(item.entries || item.headerEntries)}
+                                ${item.will ? `<strong>At will:</strong> ${cleanDescription(item.will.join(', '))}` : ''}
+                                ${item.spells ? Object.entries(item.spells).map(([level, data]) => `<br><strong>${level === '0' ? 'Cantrips (at will)' : `${level}${level==='1'?'st':level==='2'?'nd':level==='3'?'rd':'th'} level (${data.slots} slots)`}:</strong> ${cleanDescription(data.spells.join(', '))}`).join('') : ''}
+                            </div>`).join('')}
+                        </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+}
+
+// --- Helper Functions ---
+function addCustomMonster() {
+    const id = Date.now();
+    const customMonster = { 
+        id: id, name: ``, isCustom: true,
+        size: null, type: null, alignment: null, ac: [null], hp: {average: null}, speed: null, 
+        str: null, dex: null, con: null, int: null, wis: null, cha: null, 
+        cr: null, skill: null, senses: null, languages: null,
+        trait: [], action: [], reaction: [], legendary: [], spellcasting: []
+    };
+    selectedCards.push(customMonster);
+    renderSingleCard(customMonster);
+}
+function getModifier(score) { if(score === null) return "___"; return Math.floor(((score || 10) - 10) / 2); }
+function formatModifier(mod) { if(typeof mod === 'string') return mod; return mod >= 0 ? `+${mod}` : `${mod}`; }
+function getSize(m) { if (m.isCustom) return ''; const map = {"T":"Tiny","S":"Small","M":"Medium","L":"Large","H":"Huge","G":"Gargantuan"}; return Array.isArray(m.size) ? map[m.size[0]] || "Medium" : m.size || "Medium"; }
+function getMonsterType(m) { if (m.isCustom) return ''; if (typeof m.type === 'object' && m.type.type) { let s = m.type.type; if (m.type.tags) s += ` (${m.type.tags.join(', ')})`; return s; } return m.type || 'humanoid'; }
+function getAlignment(m) { if (m.isCustom) return ''; if (Array.isArray(m.alignment)) { const map = {"L":"lawful","N":"neutral","C":"chaotic","G":"good","E":"evil","U":"unaligned"}; return m.alignment.map(a => map[a] || a).join(' '); } return m.alignment || 'neutral'; }
+function getArmorClass(m) { if (m.isCustom) return "___"; const val = (Array.isArray(m.ac) ? m.ac[0].ac || m.ac[0] : m.ac); return val || 10; }
+function getHitPoints(m) { if (m.isCustom) return "___"; const val = (m.hp && m.hp.average) || m.hp; return val || 1; }
+function getSpeed(m) { if (m.isCustom) return "___ ft."; if (typeof m.speed === 'object') { return Object.entries(m.speed).map(([t, d]) => `${t !== 'walk' ? t + ' ' : ''}${d} ft.`).join(', '); } return `${m.speed || 30} ft.`; }
+function getChallengeRating(m) { if (m.isCustom) return "__"; const val = (m.cr && m.cr.cr) || m.cr; return val || '0'; }
+function getInitiative(m) { if (m.isCustom) return "___"; return formatModifier(getModifier(m.dex)); }
+function formatSenses(m) { if (!m.senses) return ''; let s = Array.isArray(m.senses) ? m.senses.join(', ') : m.senses; if (m.passive) s += `${s ? ', ' : ''}passive Perception ${m.passive}`; return s; }
+function formatLanguages(m) { return Array.isArray(m.languages) ? m.languages.join(', ') : m.languages || ''; }
+function formatImmunities(m) { const p = []; if (m.immune) p.push(`Damage Immunities: ${m.immune.join(', ')}`); if (m.conditionImmune) p.push(`Condition Immunities: ${m.conditionImmune.join(', ')}`); return p.join('; '); }
+function formatSkills(m) { return m.skill ? Object.entries(m.skill).map(([s, b]) => `${s.charAt(0).toUpperCase() + s.slice(1)} ${b}`).join(', ') : ''; }
+function cleanDescription(entries) {
+    if (!entries) return '';
+    let text = Array.isArray(entries) ? entries.join(' ') : entries.toString();
+    text = text.replace(/\{@spell ([^|}]+)[^}]*\}/gi, (match, p1) => p1.split('|')[0]);
+    text = text.replace(/\{@condition ([^|}]+)[^}]*\}/gi, '$1');
+    text = text.replace(/\{@damage ([^}]+)\}/gi, '$1');
+    text = text.replace(/\{@dice ([^}]+)\}/gi, '$1');
+    text = text.replace(/\{@recharge (\d+)\}/gi, '(Recharge $1-6)');
+    text = text.replace(/\{@recharge\}/gi, '(Recharge 6)');
+    text = text.replace(/\{@[^}]+\}/g, '');
+    return text.replace(/\s+/g, ' ').trim();
+}
+
+function toggleTheme() {
+    const body = document.querySelector('body');
+    body.classList.toggle('theme-modern');
+    if (body.classList.contains('theme-modern')) {
+        localStorage.setItem('theme', 'modern');
+    } else {
+        localStorage.removeItem('theme');
+    }
+}
+
+function togglePrintLayout() {
+    const body = document.querySelector('body');
+    body.classList.toggle('print-direct-to-card');
+    updatePrintLayoutButton();
+    if (body.classList.contains('print-direct-to-card')) {
+        localStorage.setItem('printMode', 'card');
+    } else {
+        localStorage.setItem('printMode', 'page');
+    }
+}
+
+function updatePrintLayoutButton() {
+    const btnText = document.getElementById('print-layout-text');
+    if (document.body.classList.contains('print-direct-to-card')) {
+        btnText.textContent = "Layout: 3.5x5 Card";
+    } else {
+        btnText.textContent = "Layout: Full Page";
+    }
+}
+
+function printAllCards() {
+    const wrappers = document.querySelectorAll('#card-container .card-wrapper');
+    // Clear any previous page break classes
+    wrappers.forEach(w => w.classList.remove('page-break-after'));
+
+    if (!document.body.classList.contains('print-direct-to-card')) {
+        // Add a class to every second monster to force a page break after it
+        wrappers.forEach((wrapper, index) => {
+            if ((index + 1) % 2 === 0) {
+                wrapper.classList.add('page-break-after');
+            }
+        });
+    }
+    window.print();
+}
+
+// Initial Setup & Auto-Load
+window.onload = () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'modern') {
+        document.querySelector('body').classList.add('theme-modern');
+    } else {
+        document.querySelector('body').classList.remove('theme-modern');
+    }
+
+    const savedPrintMode = localStorage.getItem('printMode');
+    if (savedPrintMode === 'card') {
+        document.querySelector('body').classList.add('print-direct-to-card');
+    }
+
+    updatePrintLayoutButton();
+    updateEmptyState();
+    processMonsterData(monsterJsonData);
+};
+
+</script>
+</body>
+</html>

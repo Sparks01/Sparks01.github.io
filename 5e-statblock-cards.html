@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 5e Statblock Cards</title>
+    
+    <!-- D&D PHB Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic" rel="stylesheet" type="text/css">
+    
+    <!-- Card Printer Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <!-- Include html2canvas library for image conversion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+       @import url('https://db.onlinewebfonts.com/c/424b8aede804aa7c4ccf56674de5ca09?family=Scaly+Sans+Remake');
+@font-face {
+    font-family: 'ScalySans';
+    src: url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.eot");
+    src: url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.svg#Scaly Sans Remake")format("svg");
+}
+@font-face {
+    font-family: 'ScalySansCaps';
+    src: url('https://cdn.jsdelivr.net/gh/naturalcrit/homebrewery@master/themes/fonts/5e/Scaly%20Sans%20Caps.woff2') format('woff2');
+}
+
+:root {
+    --card-width: 5in;
+    --card-height: 3.5in;
+    /* Classic Theme (Default) */
+    --font-header: 'ScalySansCaps', 'Libre Baskerville', 'Oswald', 'Arial Black', sans-serif;
+    --font-body: 'ScalySans', 'Noto Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    --accent-color: #6f1f11;
+    --background-color: #ffffff; 
+    --page-background: #f0f0f0;
+    --border-color: #d6d0c9;
+    --table-red: #ece5de;
+    --table-yellow: #f3ede3;
+    --table-purple: #e8e4e1;
+    --table-green: #e5e8e2;
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --text-color: #000;
+    --light-text-color: #888;
+    --button-color: #6f1f11;
+    --button-add-color: #28a745;
+    --button-danger-color: #dc3545;
+}
+
+body.theme-modern {
+    /* Modern Theme Override */
+    --font-header: 'Poppins', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+    --accent-color: #3366cc;
+    --background-color: #ffffff;
+    --page-background: #f0f2f5;
+    --border-color: #dee2e6;
+    --table-red: #f8f9fa;
+    --table-yellow: #f8f9fa;
+    --table-purple: #f8f9fa;
+    --table-green: #f8f9fa;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #212529;
+    --light-text-color: #6c757d;
+    --button-color: #3366cc;
+    --button-add-color: #27ae60;
+    --button-danger-color: #e74c3c;
+}
+
+* { box-sizing: border-box; }
+
+body { 
+    font-family: var(--font-body); 
+    background: var(--page-background); 
+    margin: 0; 
+    padding: 20px; 
+    line-height: 1.4; 
+    color: var(--text-color); 
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-header h1 {
+    font-family: var(--font-header);
+    font-size: 2.5em;
+    color: var(--text-color);
+    margin: 0 0 5px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page-header h1 i { color: var(--accent-color); }
+.page-header p { margin: 0; font-size: 1.1em; color: var(--light-text-color); }
+
+.main-container { 
+    display: grid; 
+    grid-template-columns: minmax(350px, 1fr) 3fr; 
+    gap: 30px;
+    align-items: start; 
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.sidebar { 
+    position: sticky; 
+    top: 20px; 
+    background: var(--background-color); 
+    padding: 20px; 
+    border-radius: 10px; 
+    border: 1px solid var(--border-color); 
+    box-shadow: 0 1px 4px var(--shadow-color); 
+}
+
+.control-group { margin-bottom: 20px; }
+
+.control-group h3 { 
+    font-family: var(--font-header); 
+    color: var(--text-color); 
+    margin: 0 0 15px 0; 
+    font-size: 1.2em; 
+    font-weight: 600; 
+    border-bottom: 1.5px solid var(--border-color); 
+    padding-bottom: 2px; 
+    display: flex; 
+    align-items: center; 
+}
+
+.control-group h3 i { color: var(--accent-color); margin-right: 10px; }
+
+.control-group button { 
+    background: var(--button-color); 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    margin: 5px 0; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: 600; 
+    font-family: var(--font-body); 
+    transition: background-color 0.2s; 
+    width: 100%; 
+}
+
+.control-group button:hover { opacity: 0.9; }
+.control-group button i { margin-right: 8px; }
+
+/* Button Hierarchy */
+.control-group button.btn-primary { background-color: var(--button-add-color); }
+.control-group button.btn-danger { background-color: var(--button-danger-color); }
+
+
+.form-group { margin-bottom: 15px; }
+
+label { 
+    display: block; 
+    margin-bottom: 5px; 
+    font-weight: bold; 
+    font-family: var(--font-header);
+    color: var(--accent-color);
+}
+
+input, select, textarea { 
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+    font-family: var(--font-body);
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+.ability-scores { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; 
+}
+
+.ability-score { display: flex; flex-direction: column; }
+.ability-modifier { font-size: 0.8em; color: var(--light-text-color); margin-top: 2px; }
+.ability-save-row { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+.save-input { width: 40px; text-align: center; }
+.prof-checkbox-label { display: flex; align-items: center; font-size: 0.8em; }
+.prof-checkbox { width: auto; margin: 0 3px 0 5px; }
+.prof-text { font-size: 0.8em; color: var(--accent-color); }
+
+.tab-list { list-style: none; padding: 0; margin: 0 0 20px 0; display: flex; border-bottom: 1px solid var(--border-color); }
+.tab { padding: 10px 20px; cursor: pointer; margin-right: 5px; background: var(--page-background); color: var(--text-color); border-radius: 5px 5px 0 0; }
+.tab.active { border: 1px solid var(--border-color); border-bottom: 1px solid var(--background-color); background-color: var(--background-color); font-weight: bold; color: var(--accent-color); margin-bottom: -1px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+#card-output { display: flex; flex-wrap: wrap; justify-content: flex-start; align-content: flex-start; gap: 20px; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.card-wrapper { position: relative; animation: fadeIn 0.4s ease-out; }
+
+.card-controls {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    display: flex;
+    gap: 5px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+.card-wrapper:hover .card-controls { opacity: 1; }
+.card-controls button {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-controls button:hover { background-color: white; color: var(--accent-color); }
+
+
+#empty-state {
+    width: 100%;
+    text-align: center;
+    padding: 80px 40px;
+    color: var(--light-text-color);
+    border: 3px dashed var(--border-color);
+    border-radius: 10px;
+}
+#empty-state i { font-size: 5em; margin-bottom: 20px; display: block; }
+#empty-state h2 { font-family: var(--font-header); color: var(--text-color); font-size: 2em; margin: 0 0 10px 0; }
+
+
+.monster-card {
+    width: var(--card-width); 
+    height: var(--card-height); 
+    background: var(--background-color);
+    border: 1px solid var(--border-color); 
+    border-radius: 10px; 
+    padding: 12px;
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    font-size: 10px;
+    line-height: 1.3; 
+    position: relative;
+    box-shadow: 0 1px 4px var(--shadow-color); 
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.monster-card::before { 
+    content: ""; 
+    position: absolute; 
+    top: 3px; left: 3px; right: 3px; bottom: 3px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 7px; 
+    pointer-events: none; 
+}
+
+.monster-name { font-family: var(--font-header); font-size: 20px; font-weight: 600; color: var(--accent-color); margin: 0 0 3px 0; line-height: 1.1; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; text-transform: uppercase; min-height: 24px; }
+.monster-type { font-style: italic; color: var(--light-text-color); margin: 3px 0 10px 0; font-size: 10px; min-height: 1.3em; }
+.left-column, .right-column { display: flex; flex-direction: column; overflow: hidden; position: relative; }
+.basic-stats { margin-bottom: 8px; font-size: 9px; display: flex; justify-content: space-between; align-items: flex-start; line-height: 1.5; }
+.basic-stats-group { display: flex; flex-direction: column; }
+.stat-line { display: flex; align-items: baseline; }
+.stat-line strong { color: var(--accent-color); font-family: var(--font-header); text-transform: uppercase; font-size: 0.9em; font-weight: 600; margin-right: 0.5em; width: 3.5em; }
+.stat-line span { font-weight: bold; }
+.initiative-stat strong { width: auto; }
+
+.ability-scores { margin-bottom: 8px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 5px 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 3px; }
+.ability-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ability-table th { color: var(--light-text-color); font-weight: normal; font-size: 6px; text-align: center; padding: 0; height: 8px; }
+.ability-table td { padding: 1px 2px; text-align: center; height: 12px; font-size: 8px; font-weight: bold; }
+.ability-table td.ability-name { color: var(--accent-color); text-transform: uppercase; text-align: left; padding-left: 3px; font-size: 7px; width: 22px; }
+.ability-scores .ability-table:nth-child(1), .ability-scores .ability-table:nth-child(4) { background-color: var(--table-red); }
+.ability-scores .ability-table:nth-child(1) .ability-name, .ability-scores .ability-table:nth-child(4) .ability-name { background-color: var(--table-yellow); }
+.ability-scores .ability-table:nth-child(2), .ability-scores .ability-table:nth-child(5) { background-color: var(--table-purple); }
+.ability-scores .ability-table:nth-child(2) .ability-name, .ability-scores .ability-table:nth-child(5) .ability-name { background-color: var(--table-green); }
+.ability-scores .ability-table:nth-child(3), .ability-scores .ability-table:nth-child(6) { background-color: var(--table-red); }
+.ability-scores .ability-table:nth-child(3) .ability-name, .ability-scores .ability-table:nth-child(6) .ability-name { background-color: var(--table-yellow); }
+
+.secondary-stats { font-size: 7.5px; margin-bottom: 8px; line-height: 1.4; }
+.stat-block-line { display: flex; }
+.stat-label { color: var(--accent-color); font-family: var(--font-header); text-transform: uppercase; font-size: 0.9em; font-weight: 600; margin-right: 0.5em; flex-shrink: 0; }
+.section-header { font-weight: 600; color: var(--accent-color); font-size: 11px; margin-bottom: 4px; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; font-family: var(--font-header); text-transform: uppercase; letter-spacing: 0.5px; }
+.action-item { margin-bottom: 4px; font-size: 8px; line-height: 1.3; word-break: break-word; }
+.action-name { font-weight: bold; font-style: italic; }
+.challenge-rating { position: absolute; top: 0px; right: 0px; background: var(--background-color); color: var(--accent-color); border: 1.5px solid var(--accent-color); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; font-family: var(--font-header); }
+.monster-card.back .left-column { display: none; }
+.monster-card.back { grid-template-columns: 1fr; }
+.monster-card.back .monster-name { font-size: 16px; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; margin-bottom: 8px; }
+.overflow-indicator { font-size: 8px; color: var(--light-text-color); font-style: italic; position: absolute; bottom: 0; left: 0; }
+
+@media print {
+    body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sidebar, .monster-card::before, .page-header, .card-controls { display: none; }
+    .main-container, #card-output { display: block; }
+    .monster-card { box-shadow: none; transform: none; margin-bottom: 0; border: none; }
+    .card-wrapper { page-break-inside: avoid; break-inside: avoid; margin: 0 auto 0.2in auto; }
+    @page { size: letter; margin: 0.5in; }
+}
+
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .main-container { grid-template-columns: 1fr; gap: 20px; }
+    .sidebar { position: relative; top: auto; }
+    .ability-scores { grid-template-columns: repeat(2, 1fr); }
+    input, select, textarea { padding: 12px; font-size: 16px; }
+    .monster-card { width: 100%; height: auto; grid-template-columns: 1fr; padding: 15px; }
+    .monster-card .right-column { padding-top: 15px; }
+    .challenge-rating { top: 10px; right: 10px; width: 30px; height: 30px; font-size: 14px; }
+    .card-controls { opacity: 1; }
+}
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>
+            <i class="fas fa-hammer"></i>
+            5e Statblock Cards
+        </h1>
+        <p>A D&D 2024 Monster Card Creator</p>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="control-group">
+                <h3><i class="fas fa-tools"></i> Tools</h3>
+                <button type="button" id="generate-card-btn" class="btn-primary">
+                    <i class="fas fa-id-card"></i> Generate Card
+                </button>
+                <button type="button" id="export-btn">
+                    <i class="fas fa-download"></i> Export as Image
+                </button>
+                <button type="button" onclick="printCards()">
+                    <i class="fas fa-print"></i> Print Cards
+                </button>
+                <button type="button" id="clear-all-btn" class="btn-danger">
+                    <i class="fas fa-trash-alt"></i> Clear All Cards
+                </button>
+            </div>
+
+            <div class="control-group">
+                <h3><i class="fas fa-paint-brush"></i> Theme</h3>
+                <button id="theme-toggle-btn" onclick="toggleTheme()">
+                    <i class="fas fa-exchange-alt"></i> Toggle Theme
+                </button>
+            </div>
+
+            <ul class="tab-list">
+                <li class="tab active" id="editor-tab-btn">Form Editor</li>
+                <li class="tab" id="markdown-tab-btn">Markdown</li>
+            </ul>
+            
+            <div id="editor-tab" class="tab-content active">
+                <div class="control-group">
+                    <button type="button" id="paste-monster-btn">
+                        <i class="fas fa-paste"></i> Paste Homebrewery Format
+                    </button>
+                </div>
+                
+                <form id="monster-form">
+                    <div class="form-group">
+                        <label for="monster-name">Monster Name</label>
+                        <input type="text" id="monster-name" value="Sphinx of Wonder">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-size">Size</label>
+                        <select id="monster-size">
+                            <option value="Tiny" selected>Tiny</option>
+                            <option value="Small">Small</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Large">Large</option>
+                            <option value="Huge">Huge</option>
+                            <option value="Gargantuan">Gargantuan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-type">Type</label>
+                        <input type="text" id="monster-type" value="Celestial">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-alignment">Alignment</label>
+                        <input type="text" id="monster-alignment" value="Lawful Good">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-ac">Armor Class</label>
+                        <input type="number" id="monster-ac" min="0" value="13">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-hp">Hit Points</label>
+                        <input type="text" id="monster-hp" value="24 (7d4 + 7)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-speed">Speed</label>
+                        <input type="text" id="monster-speed" value="20ft., Fly 40ft">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-initiative">Initiative</label>
+                        <input type="text" id="monster-initiative" value="+3 (13)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Ability Scores</label>
+                        <div class="ability-scores">
+                            <div class="ability-score">
+                                <label for="str">STR</label>
+                                <input type="number" id="str" min="1" value="6">
+                                <div class="ability-modifier" id="str-mod">-2</div>
+                                <div class="ability-save-row">
+                                    <label for="str-save">Save:</label>
+                                    <input type="text" id="str-save" class="save-input" value="-2">
+                                    <label class="prof-checkbox-label">
+                                        <input type="checkbox" id="str-prof" class="prof-checkbox">
+                                        <span class="prof-text">Prof</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="ability-score">
+                                <label for="dex">DEX</label>
+                                <input type="number" id="dex" min="1" value="17">
+                                <div class="ability-modifier" id="dex-mod">+3</div>
+                                <div class="ability-save-row">
+                                    <label for="dex-save">Save:</label>
+                                    <input type="text" id="dex-save" class="save-input" value="+3">
+                                    <label class="prof-checkbox-label">
+                                        <input type="checkbox" id="dex-prof" class="prof-checkbox">
+                                        <span class="prof-text">Prof</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="ability-score">
+                                <label for="con">CON</label>
+                                <input type="number" id="con" min="1" value="13">
+                                <div class="ability-modifier" id="con-mod">+1</div>
+                                <div class="ability-save-row">
+                                    <label for="con-save">Save:</label>
+                                    <input type="text" id="con-save" class="save-input" value="+1">
+                                    <label class="prof-checkbox-label">
+                                        <input type="checkbox" id="con-prof" class="prof-checkbox">
+                                        <span class="prof-text">Prof</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="ability-score">
+                                <label for="int">INT</label>
+                                <input type="number" id="int" min="1" value="15">
+                                <div class="ability-modifier" id="int-mod">+2</div>
+                                <div class="ability-save-row">
+                                    <label for="int-save">Save:</label>
+                                    <input type="text" id="int-save" class="save-input" value="+2">
+                                    <label class="prof-checkbox-label">
+                                        <input type="checkbox" id="int-prof" class="prof-checkbox">
+                                        <span class="prof-text">Prof</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="ability-score">
+                                <label for="wis">WIS</label>
+                                <input type="number" id="wis" min="1" value="12">
+                                <div class="ability-modifier" id="wis-mod">+1</div>
+                                <div class="ability-save-row">
+                                    <label for="wis-save">Save:</label>
+                                    <input type="text" id="wis-save" class="save-input" value="+1">
+                                    <label class="prof-checkbox-label">
+                                        <input type="checkbox" id="wis-prof" class="prof-checkbox">
+                                        <span class="prof-text">Prof</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="ability-score">
+                                <label for="cha">CHA</label>
+                                <input type="number" id="cha" min="1" value="11">
+                                <div class="ability-modifier" id="cha-mod">+0</div>
+                                <div class="ability-save-row">
+                                    <label for="cha-save">Save:</label>
+                                    <input type="text" id="cha-save" class="save-input" value="+0">
+                                    <label class="prof-checkbox-label">
+                                        <input type="checkbox" id="cha-prof" class="prof-checkbox">
+                                        <span class="prof-text">Prof</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-skills">Skills</label>
+                        <input type="text" id="monster-skills" value="Arcana +4, Religion +4, Stealth +5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-resistances">Damage Resistances</label>
+                        <input type="text" id="monster-resistances" value="Necrotic, Psychic, Radiant">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-immunities">Damage Immunities</label>
+                        <input type="text" id="monster-immunities" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-vulnerabilities">Damage Vulnerabilities</label>
+                        <input type="text" id="monster-vulnerabilities" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-senses">Senses</label>
+                        <input type="text" id="monster-senses" value="Darkvision 60 ft., Passive Perception 11">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-languages">Languages</label>
+                        <input type="text" id="monster-languages" value="Celestial, Common">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-cr">Challenge Rating</label>
+                        <input type="text" id="monster-cr" value="1 (XP 200; PB +2)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-traits">Traits</label>
+                        <textarea id="monster-traits" rows="4">Magic Resistance. The sphinx has Advantage on saving throws against spells and other magical effects.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-actions">Actions</label>
+                        <textarea id="monster-actions" rows="4">Rend. Melee Attack Roll: +5, reach 5ft. Hit 5 (1d4 + 3) Slashing damage plus 7 (2d6) Radiant damage.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-reactions">Reactions</label>
+                        <textarea id="monster-reactions" rows="4">Burst of Ingenuity (2/Day). Trigger: The sphinx or another creature within 30 feet makes an ability check or a saving throw. Response: The sphinx adds 2 to the roll.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="monster-legendary">Legendary Actions</label>
+                        <textarea id="monster-legendary" rows="4"></textarea>
+                    </div>
+                </form>
+                
+            </div>
+            
+            <div id="markdown-tab" class="tab-content">
+                <div class="form-group">
+                    <label for="markdown-input">Markdown Format</label>
+                    <div id="drop-zone" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 10px; background: var(--background-color); transition: all 0.3s;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2em; color: var(--light-text-color); margin-bottom: 10px; display: block;"></i>
+                        <p style="margin: 0; color: var(--light-text-color);">Drop your .md file here or paste text below</p>
+                    </div>
+                    <textarea id="markdown-input" rows="20"></textarea>
+                </div>
+                <div class="control-group">
+                    <button type="button" id="import-btn">
+                        <i class="fas fa-upload"></i> Import Markdown
+                    </button>
+                    <button type="button" id="export-markdown-btn">
+                        <i class="fas fa-file-export"></i> Export to Markdown
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main id="card-output">
+            <div id="empty-state">
+                <i class="fas fa-scroll"></i>
+                <h2>Your Monster Compendium is Empty</h2>
+                <p>Use the form on the left to forge a new creature.</p>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Paste monster modal -->
+    <div id="paste-monster-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
+        <div style="background-color: var(--background-color); margin: 10% auto; padding: 20px; width: 80%; max-width: 800px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            <span id="close-paste-modal" style="float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            <h2 style="color: var(--accent-color); font-family: var(--font-header);">Paste Homebrewery Format Monster</h2>
+            <p>Paste your monster in Homebrewery format below:</p>
+            <textarea id="paste-monster-input" placeholder="## Monster Name *Size Type, Alignment* {{stats..." style="width: 100%; min-height: 300px; margin-bottom: 15px; font-family: monospace; background: var(--background-color); color: var(--text-color); border: 1px solid var(--border-color);"></textarea>
+            <div style="text-align: center;">
+                <button type="button" id="process-paste-btn" style="background: var(--button-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-cogs"></i> Process Monster
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getModifier(score) { return Math.floor((score - 10) / 2); }
+        function formatModifier(mod) { return mod >= 0 ? `+${mod}` : `${mod}`; }
+        
+        function getProficiencyBonus(cr) {
+            let crValue = 0;
+            if (typeof cr === 'string') {
+                if (cr.includes('/')) {
+                    const parts = cr.split('/');
+                    crValue = parseInt(parts[0]) / parseInt(parts[1]);
+                } else {
+                    crValue = parseFloat(cr.split(' ')[0] || cr);
+                }
+            } else { crValue = cr; }
+            if (crValue < 5) return 2; if (crValue < 9) return 3; if (crValue < 13) return 4;
+            if (crValue < 17) return 5; if (crValue < 21) return 6; if (crValue < 25) return 7;
+            if (crValue < 29) return 8; return 9;
+        }
+
+        function initSaveProficiency() {
+            const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+            const crInput = document.getElementById('monster-cr');
+
+            function updateAllSaveProficiencies() {
+                const profBonus = getProficiencyBonus(crInput.value || '0');
+                abilities.forEach(ability => {
+                    if (document.getElementById(`${ability}-prof`).checked) {
+                        const score = parseInt(document.getElementById(ability).value) || 10;
+                        document.getElementById(`${ability}-save`).value = formatModifier(getModifier(score) + profBonus);
+                    }
+                });
+            }
+
+            abilities.forEach(ability => {
+                document.getElementById(`${ability}-prof`).addEventListener('change', function() {
+                    const profBonus = getProficiencyBonus(crInput.value || '0');
+                    const score = parseInt(document.getElementById(ability).value) || 10;
+                    const baseMod = getModifier(score);
+                    const saveInput = document.getElementById(`${ability}-save`);
+                    saveInput.value = this.checked ? formatModifier(baseMod + profBonus) : formatModifier(baseMod);
+                });
+            });
+            crInput.addEventListener('input', updateAllSaveProficiencies);
+        }
+
+        function updateModifiers() {
+            const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+            const profBonus = getProficiencyBonus(document.getElementById('monster-cr').value || '0');
+            abilities.forEach(ability => {
+                const score = parseInt(document.getElementById(ability).value) || 10;
+                const mod = getModifier(score);
+                document.getElementById(`${ability}-mod`).textContent = formatModifier(mod);
+                const saveInput = document.getElementById(`${ability}-save`);
+                if (document.getElementById(`${ability}-prof`).checked) {
+                    saveInput.value = formatModifier(mod + profBonus);
+                } else {
+                    saveInput.value = formatModifier(mod);
+                }
+            });
+        }
+
+        function setInitialSaveProficiencies() {
+            const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+            abilities.forEach(ability => {
+                const score = parseInt(document.getElementById(ability).value) || 10;
+                const baseMod = getModifier(score);
+                const saveInput = document.getElementById(`${ability}-save`);
+                if (saveInput.value && saveInput.value !== formatModifier(baseMod)) {
+                    const saveBonus = parseInt(saveInput.value.replace('+', ''));
+                    if (Math.abs(saveBonus - baseMod) >= 2) {
+                        document.getElementById(`${ability}-prof`).checked = true;
+                    }
+                }
+            });
+        }
+
+        function parseSection(text) {
+            if (!text) return [];
+            return text.split('\n').filter(line => line.trim()).map(line => {
+                const dotIndex = line.indexOf('.');
+                if (dotIndex === -1) return { name: line, description: '' };
+                return { name: line.substring(0, dotIndex).trim(), description: line.substring(dotIndex + 1).trim() };
+            });
+        }
+
+        function generateCard() {
+            try {
+                const monster = {
+                    name: document.getElementById('monster-name').value || 'Monster',
+                    size: document.getElementById('monster-size').value || 'Medium',
+                    type: document.getElementById('monster-type').value || 'Beast',
+                    alignment: document.getElementById('monster-alignment').value || 'Unaligned',
+                    ac: document.getElementById('monster-ac').value || '10',
+                    hp: document.getElementById('monster-hp').value || '10',
+                    speed: document.getElementById('monster-speed').value || '30 ft.',
+                    initiative: document.getElementById('monster-initiative').value || '+0',
+                    str: parseInt(document.getElementById('str').value) || 10,
+                    dex: parseInt(document.getElementById('dex').value) || 10,
+                    con: parseInt(document.getElementById('con').value) || 10,
+                    int: parseInt(document.getElementById('int').value) || 10,
+                    wis: parseInt(document.getElementById('wis').value) || 10,
+                    cha: parseInt(document.getElementById('cha').value) || 10,
+                    skills: document.getElementById('monster-skills').value || '',
+                    resistances: document.getElementById('monster-resistances').value || '',
+                    immunities: document.getElementById('monster-immunities').value || '',
+                    vulnerabilities: document.getElementById('monster-vulnerabilities').value || '',
+                    senses: document.getElementById('monster-senses').value || '',
+                    languages: document.getElementById('monster-languages').value || '',
+                    cr: document.getElementById('monster-cr').value || '',
+                    id: Date.now()
+                };
+                ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(a => {
+                    monster[a + 'Save'] = document.getElementById(a + '-save').value || formatModifier(getModifier(monster[a]));
+                });
+                ['traits', 'actions', 'reactions', 'legendary'].forEach(s => {
+                    monster[s] = parseSection(document.getElementById(`monster-${s}`).value);
+                });
+
+                const cardOutput = document.getElementById('card-output');
+                const emptyState = document.getElementById('empty-state');
+                if (emptyState) emptyState.style.display = 'none';
+                
+                cardOutput.insertAdjacentHTML('beforeend', generateCardHTML(monster));
+                
+                const newCardWrapper = document.getElementById(`card-${monster.id}`);
+                if (newCardWrapper) {
+                    newCardWrapper.dataset.monsterData = JSON.stringify(monster);
+                    newCardWrapper.querySelector('.delete-card-btn').addEventListener('click', () => newCardWrapper.remove());
+                    newCardWrapper.querySelector('.edit-card-btn').addEventListener('click', () => {
+                        const monsterData = JSON.parse(newCardWrapper.dataset.monsterData);
+                        applyMonsterDataToForm(monsterData);
+                        switchTab('editor');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                }
+
+                setTimeout(() => checkForCardOverflow(monster, `card-${monster.id}`), 100);
+            } catch (error) {
+                console.error('Error generating card:', error);
+                alert('An error occurred. Check console for details.');
+            }
+        }
+
+        function clearAllCards() {
+            document.getElementById('card-output').innerHTML = `
+                <div id="empty-state">
+                    <i class="fas fa-scroll"></i>
+                    <h2>Your Monster Compendium is Empty</h2>
+                    <p>Use the form on the left to forge a new creature.</p>
+                </div>`;
+        }
+
+        function clearFormFields() {
+            document.getElementById('monster-form').reset();
+            updateModifiers();
+        }
+
+        function checkForCardOverflow(monster, cardWrapperId) {
+            const cardWrapper = document.getElementById(cardWrapperId);
+            if (!cardWrapper) return;
+            const frontCard = cardWrapper.querySelector('.monster-card.front');
+            const frontRightCol = frontCard?.querySelector('.right-column');
+            if (!frontRightCol || frontRightCol.scrollHeight <= frontRightCol.clientHeight) return;
+
+            let backCard = cardWrapper.querySelector('.monster-card.back');
+            if (!backCard) {
+                backCard = document.createElement('div');
+                backCard.className = 'monster-card back';
+                backCard.innerHTML = `<div class="right-column"><div class="monster-name">${monster.name} (CONTINUED)</div></div>`;
+                cardWrapper.appendChild(backCard);
+            }
+            const backRightCol = backCard.querySelector('.right-column');
+
+            let iterations = 0;
+            while (frontRightCol.scrollHeight > frontRightCol.clientHeight && iterations < 100) {
+                const lastSectionOnFront = frontRightCol.querySelector('.actions-section:last-of-type');
+                if (!lastSectionOnFront) break;
+                
+                const lastItem = lastSectionOnFront.querySelector('.action-item:last-of-type');
+                if (!lastItem) {
+                    const sectionHeader = lastSectionOnFront.querySelector('.section-header');
+                    if(sectionHeader) backRightCol.prepend(sectionHeader);
+                    lastSectionOnFront.remove();
+                    continue;
+                }
+
+                const sectionTitle = lastSectionOnFront.querySelector('.section-header').textContent;
+                let backSection = backRightCol.querySelector(`[data-section-title="${sectionTitle}"]`);
+
+                if (!backSection) {
+                    backSection = document.createElement('div');
+                    backSection.className = 'actions-section';
+                    backSection.dataset.sectionTitle = sectionTitle;
+                    backSection.innerHTML = `<div class="section-header">${sectionTitle}</div>`;
+                    backRightCol.insertBefore(backSection, backRightCol.children[1]);
+                }
+
+                backSection.insertBefore(lastItem, backSection.children[1]);
+
+                if (lastSectionOnFront.querySelectorAll('.action-item').length === 0) {
+                    lastSectionOnFront.remove();
+                }
+                iterations++;
+            }
+
+            if (cardWrapper.querySelector('.monster-card.back .actions-section')) {
+                const indicator = document.createElement('div');
+                indicator.className = 'overflow-indicator';
+                indicator.textContent = '(continued...)';
+                frontRightCol.appendChild(indicator);
+            } else {
+                backCard.remove();
+            }
+        }
+        
+        function generateCardHTML(monster) {
+            const getCR = () => monster.cr.split(' ')[0] || monster.cr || '0';
+            const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+            return `
+                <div class="card-wrapper" id="card-${monster.id}">
+                    <div class="card-controls">
+                        <button type="button" class="edit-card-btn" title="Edit this monster"><i class="fas fa-pencil-alt"></i></button>
+                        <button type="button" class="delete-card-btn" title="Delete this monster"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="monster-card front">
+                        <div class="left-column">
+                            <div class="monster-name">${monster.name}</div>
+                            <div class="monster-type">${monster.size} ${monster.type}, ${monster.alignment}</div>
+                            <div class="basic-stats">
+                                <div class="basic-stats-group">
+                                    <div class="stat-line"><strong>AC</strong> <span>${monster.ac}</span></div>
+                                    <div class="stat-line"><strong>HP</strong> <span>${monster.hp}</span></div>
+                                    <div class="stat-line"><strong>Speed</strong> <span>${monster.speed}</span></div>
+                                </div>
+                                <div class="stat-line initiative-stat"><strong>Initiative</strong> <span>${monster.initiative}</span></div>
+                            </div>
+                            <div class="ability-scores">
+                                ${abilities.map(ab => `
+                                <table class="ability-table">
+                                    <thead><tr><th></th><th></th><th>MOD</th><th>SAVE</th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="ability-name">${ab}</td>
+                                            <td>${monster[ab]}</td>
+                                            <td>${formatModifier(getModifier(monster[ab]))}</td>
+                                            <td>${monster[ab + 'Save']}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>`).join('')}
+                            </div>
+                            <div class="secondary-stats">
+                                ${monster.skills ? `<div class="stat-block-line"><span class="stat-label">Skills</span> <span>${monster.skills}</span></div>` : ''}
+                                ${monster.resistances ? `<div class="stat-block-line"><span class="stat-label">Resistances</span> <span>${monster.resistances}</span></div>` : ''}
+                                ${monster.immunities ? `<div class="stat-block-line"><span class="stat-label">Immunities</span> <span>${monster.immunities}</span></div>` : ''}
+                                ${monster.vulnerabilities ? `<div class="stat-block-line"><span class="stat-label">Vulnerabilities</span> <span>${monster.vulnerabilities}</span></div>` : ''}
+                                ${monster.senses ? `<div class="stat-block-line"><span class="stat-label">Senses</span> <span>${monster.senses}</span></div>` : ''}
+                                ${monster.languages ? `<div class="stat-block-line"><span class="stat-label">Languages</span> <span>${monster.languages}</span></div>` : ''}
+                            </div>
+                        </div>
+                        <div class="right-column">
+                            <div class="challenge-rating">${getCR()}</div>
+                            ${['traits', 'actions', 'reactions', 'legendary'].map(section => monster[section].length > 0 ? `
+                                <div class="actions-section">
+                                    <div class="section-header">${section === 'legendary' ? 'Legendary Actions' : section.charAt(0).toUpperCase() + section.slice(1)}</div>
+                                    ${monster[section].map(item => `
+                                        <div class="action-item"><span class="action-name">${item.name}.</span> ${item.description}</div>
+                                    `).join('')}
+                                </div>
+                            ` : '').join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleTheme() {
+            const body = document.querySelector('body');
+            body.classList.toggle('theme-modern');
+            localStorage.setItem('theme', body.classList.contains('theme-modern') ? 'modern' : 'classic');
+        }
+
+        function printCards() { window.print(); }
+
+        async function exportAsImage() {
+            const cardWrappers = document.querySelectorAll('.card-wrapper');
+            if (cardWrappers.length === 0) return alert('No cards to export.');
+
+            const exportBtn = document.getElementById('export-btn');
+            const originalBtnText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+            exportBtn.disabled = true;
+
+            try {
+                let wrapperIndex = 1;
+                for (const wrapper of cardWrappers) {
+                    const cardsInWrapper = wrapper.querySelectorAll('.monster-card');
+                    const name = wrapper.querySelector('.monster-name')?.textContent || 'monster';
+                    const safeName = name.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+
+                    for (const card of cardsInWrapper) {
+                        const canvas = await html2canvas(card, { backgroundColor: null, scale: 2, useCORS: true, logging: false });
+                        const isBack = card.classList.contains('back');
+                        const link = document.createElement('a');
+                        link.download = isBack ? `${safeName}-${wrapperIndex}-back.png` : `${safeName}-${wrapperIndex}.png`;
+                        link.href = canvas.toDataURL();
+                        link.click();
+                    }
+                    wrapperIndex++;
+                }
+            } catch (error) {
+                console.error('Error exporting images:', error);
+                alert('An error occurred during export. Check console for details.');
+            } finally {
+                exportBtn.innerHTML = originalBtnText;
+                exportBtn.disabled = false;
+            }
+        }
+        
+        // ### MODIFICATION: Rewritten to be more robust ###
+        function parseHomebreweryFormat(text) {
+    const monsterData = {};
+    const headerMatch = text.match(/##\s+([^\n]+)\n\s*\*([^*]+)\*/m);
+    if (headerMatch) {
+        monsterData.name = headerMatch[1].trim();
+        const typeText = headerMatch[2].trim();
+        const typeMatch = typeText.match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+([^,]+),\s*(.+)$/i);
+        if (typeMatch) {
+            monsterData.size = typeMatch[1];
+            monsterData.type = typeMatch[2].trim();
+            monsterData.alignment = typeMatch[3].trim();
+        } else {
+            const parts = typeText.split(',');
+            if (parts.length >= 2) {
+                monsterData.alignment = parts[parts.length - 1].trim();
+                const sizeType = parts[0].trim();
+                const sizeMatch = sizeType.match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+(.+)$/i);
+                if (sizeMatch) {
+                    monsterData.size = sizeMatch[1];
+                    monsterData.type = sizeMatch[2];
+                }
+            }
+        }
+    }
+
+    let statsMatch = text.match(/\{\{stats\s*([\s\S]*?)(?=\s*###)/m);
+    if (statsMatch) {
+        const statsContent = statsMatch[1];
+        const vitalsMatch = statsContent.match(/\{\{vitals\s*([\s\S]*?)\s*\}\}/m);
+        if (vitalsMatch) {
+            const vitalsContent = vitalsMatch[1];
+            const acMatch = vitalsContent.match(/\*\*AC\*\*\s*::\s*([^\n\\]+)/);
+            if (acMatch) monsterData.ac = acMatch[1].trim();
+            const hpMatch = vitalsContent.match(/\*\*HP\*\*\s*::\s*([^\n\\]+)/);
+            if (hpMatch) monsterData.hp = hpMatch[1].trim();
+            const speedMatch = vitalsContent.match(/\*\*Speed\*\*\s*::\s*([^\n\\]+)/);
+            if (speedMatch) monsterData.speed = speedMatch[1].trim();
+            const initiativeMatch = vitalsContent.match(/\*\*Initiative\*\*\s*::\s*([^\n\\]+)/);
+            if (initiativeMatch) monsterData.initiative = initiativeMatch[1].trim();
+        }
+
+        const tablesMatch = statsContent.match(/\{\{tables\s*([\s\S]*?)\s*\}\}/m);
+        if (tablesMatch) {
+            const tablesContent = tablesMatch[1];
+            const abilityRegex = /\|(Str|Dex|Con|Int|Wis|Cha)\|\s*(\d+)\s*\|\s*([+-]\d+|--\d+)\s*\|\s*([+-]\d+|--\d+|\+)\s*\|/gi;
+            let abilityMatch;
+            while ((abilityMatch = abilityRegex.exec(tablesContent)) !== null) {
+                const ability = abilityMatch[1].toLowerCase();
+                const score = parseInt(abilityMatch[2]);
+                const modifier = abilityMatch[3].replace('--', '-').trim();
+                let save = abilityMatch[4].replace('--', '-').trim();
+                if (save === '+') save = modifier;
+                if (save && !save.startsWith('+') && !save.startsWith('-') && save !== '0' && /^\d+$/.test(save)) {
+                    save = '+' + save;
+                }
+                monsterData[ability] = score;
+                monsterData[ability + 'Save'] = save;
+            }
+        }
+        
+        const skillsMatch = statsContent.match(/\*\*Skills\*\*\s*::\s*([^\n]+)/);
+        if (skillsMatch) monsterData.skills = skillsMatch[1].trim();
+        const immunitiesMatch = statsContent.match(/\*\*Immunities\*\*\s*::\s*([^\n]+)/);
+        if (immunitiesMatch) monsterData.immunities = immunitiesMatch[1].trim();
+        const resistancesMatch = statsContent.match(/\*\*Resistances\*\*\s*::\s*([^\n]+)/);
+        if (resistancesMatch) monsterData.resistances = resistancesMatch[1].trim();
+        const vulnerabilitiesMatch = statsContent.match(/\*\*Vulnerabilities\*\*\s*::\s*([^\n]+)/);
+        if (vulnerabilitiesMatch) monsterData.vulnerabilities = vulnerabilitiesMatch[1].trim();
+        const sensesMatch = statsContent.match(/\*\*Senses\*\*\s*::\s*([^\n]+)/);
+        if (sensesMatch) monsterData.senses = sensesMatch[1].trim();
+        const languagesMatch = statsContent.match(/\*\*Languages\*\*\s*::\s*([^\n]+)/);
+        if (languagesMatch) monsterData.languages = languagesMatch[1].trim();
+        const crMatch = statsContent.match(/\*\*CR\*\*\s*::\s*([^\n]+)/);
+        if (crMatch) monsterData.cr = crMatch[1].trim();
+    }
+    
+    function extractSection(sectionName) {
+        const sectionRegex = new RegExp('###\\s*' + sectionName + '\\s*\\n([\\s\\S]*?)(?=###|\\}\\}|$)', 'i');
+        const sectionMatch = text.match(sectionRegex);
+        if (sectionMatch) {
+            let content = sectionMatch[1].trim();
+            content = content.replace(/\*\*\*(.*?)\.\*\*\*/g, '$1.');
+            content = content.replace(/\*\*(.*?)\*\*/g, '$1');
+            return content;
+        }
+        return '';
+    }
+    
+    monsterData.traits = extractSection('Traits');
+    monsterData.actions = extractSection('Actions');
+    monsterData.reactions = extractSection('Reactions');
+    monsterData.legendary = extractSection('Legendary Actions');
+    
+    return monsterData;
+}
+
+        function applyMonsterDataToForm(data) {
+            if (!data) return;
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val || '';
+            };
+            
+            setVal('monster-name', data.name);
+            setVal('monster-size', data.size);
+            setVal('monster-type', data.type);
+            setVal('monster-alignment', data.alignment);
+            setVal('monster-ac', data.ac);
+            setVal('monster-hp', data.hp);
+            setVal('monster-speed', data.speed);
+            setVal('monster-initiative', data.initiative);
+            ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(ab => {
+                setVal(ab, data[ab]);
+                setVal(`${ab}-save`, data[`${ab}Save`]);
+            });
+            setVal('monster-skills', data.skills);
+            setVal('monster-resistances', data.resistances);
+            setVal('monster-immunities', data.immunities);
+            setVal('monster-vulnerabilities', data.vulnerabilities);
+            setVal('monster-senses', data.senses);
+            setVal('monster-languages', data.languages);
+            setVal('monster-cr', data.cr);
+
+           	setVal('monster-traits', data.traits);
+			setVal('monster-actions', data.actions);
+			setVal('monster-reactions', data.reactions);
+			setVal('monster-legendary', data.legendary);
+
+            updateModifiers();
+            setInitialSaveProficiencies();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`${tabName}-tab-btn`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        function initDragAndDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+                dropZone.addEventListener(e, (ev) => { ev.preventDefault(); ev.stopPropagation(); }, false);
+                document.body.addEventListener(e, (ev) => { ev.preventDefault(); ev.stopPropagation(); }, false);
+            });
+            ['dragenter', 'dragover'].forEach(e => dropZone.addEventListener(e, () => dropZone.style.borderColor = 'var(--accent-color)', false));
+            ['dragleave', 'drop'].forEach(e => dropZone.addEventListener(e, () => dropZone.style.borderColor = 'var(--border-color)', false));
+            dropZone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer.files[0];
+                if (file && (file.type.match('text/markdown') || file.name.endsWith('.md'))) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => document.getElementById('markdown-input').value = ev.target.result;
+                    reader.readAsText(file);
+                } else { alert('Please drop a .md file.'); }
+            }, false);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('theme') === 'modern') {
+                document.body.classList.add('theme-modern');
+            }
+            initDragAndDrop();
+            initSaveProficiency();
+            setInitialSaveProficiencies();
+            updateModifiers();
+
+            document.getElementById('editor-tab-btn').addEventListener('click', () => switchTab('editor'));
+            document.getElementById('markdown-tab-btn').addEventListener('click', () => switchTab('markdown'));
+            document.querySelectorAll('.ability-score input[type="number"]').forEach(input => input.addEventListener('input', updateModifiers));
+            document.getElementById('generate-card-btn').addEventListener('click', generateCard);
+            document.getElementById('export-btn').addEventListener('click', exportAsImage);
+            document.getElementById('clear-all-btn').addEventListener('click', clearAllCards);
+            
+            const pasteModal = document.getElementById('paste-monster-modal');
+            document.getElementById('paste-monster-btn').addEventListener('click', () => { pasteModal.style.display = 'block'; document.getElementById('paste-monster-input').focus(); });
+            document.getElementById('close-paste-modal').addEventListener('click', () => pasteModal.style.display = 'none');
+            window.addEventListener('click', (e) => { if (e.target === pasteModal) pasteModal.style.display = 'none'; });
+            
+            document.getElementById('process-paste-btn').addEventListener('click', () => {
+                const text = document.getElementById('paste-monster-input').value;
+                if (!text.trim()) return alert('Please paste monster data.');
+                const data = parseHomebreweryFormat(text);
+                if (data && Object.keys(data).length > 1) {
+                    clearFormFields();
+                    applyMonsterDataToForm(data);
+                    pasteModal.style.display = 'none';
+                    generateCard();
+                    switchTab('editor');
+                } else { alert('Failed to parse monster data.'); }
+            });
+            
+            document.getElementById('import-btn').addEventListener('click', () => {
+                const markdown = document.getElementById('markdown-input').value;
+                if (!markdown.trim()) return alert('Please enter markdown to import.');
+                const data = parseHomebreweryFormat(markdown);
+                if (data && Object.keys(data).length > 1) {
+                    clearFormFields();
+                    applyMonsterDataToForm(data);
+                    generateCard();
+                    switchTab('editor');
+                } else { alert('Could not parse markdown.'); }
+            });
+
+            document.getElementById('export-markdown-btn').addEventListener('click', () => {
+                const name = document.getElementById('monster-name').value || 'Monster';
+                const size = document.getElementById('monster-size').value || 'Medium';
+                const type = document.getElementById('monster-type').value || 'Beast';
+                const alignment = document.getElementById('monster-alignment').value || 'Unaligned';
+                document.getElementById('markdown-input').value = `## ${name}\n*${size} ${type}, ${alignment}*\n\n`;
+                switchTab('markdown');
+            });
+        });
+    </script>
+</body>
+</html>

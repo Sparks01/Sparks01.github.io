@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printable Card Creator</title>
+    
+    <link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#8b4513">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=MedievalSharp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+<style>
+    :root {
+        --font-title: 'MedievalSharp', cursive;
+        --font-body: 'Lora', serif;
+        --color-dark-brown: #2c1810;
+        --color-med-brown: #4a2c17;
+        --color-accent-brown: #8b4513;
+        --color-paper-light: #f4f1e8;
+        --color-paper-dark: #e8e0d0;
+        --color-text-dark: #3e2723;
+        --color-text-light: #5d4037;
+        --color-green: #2d7d2d;
+        --color-blue: #2196f3;
+        --color-red: #f44336;
+        --color-gold: #ffd700;
+    }
+    body {
+        font-family: var(--font-body);
+        background: linear-gradient(135deg, var(--color-dark-brown), var(--color-med-brown));
+        padding: 0; margin: 0; min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .main-container { display: flex; flex: 1; min-height: 100vh; }
+    
+    .srd-browser { width: 350px; background: rgba(244, 241, 232, 0.98); border-right: 3px solid var(--color-accent-brown); display: flex; flex-direction: column; transition: margin-left 0.3s ease; position: relative; z-index: 1000; }
+    .srd-browser.collapsed { margin-left: -320px; }
+    .srd-toggle { position: absolute; right: -30px; top: 50%; transform: translateY(-50%); background: var(--color-accent-brown); color: var(--color-paper-light); border: none; padding: 10px 5px; border-radius: 0 5px 5px 0; cursor: pointer; writing-mode: vertical-rl; text-orientation: mixed; font-size: 12px; font-weight: bold; }
+    .srd-header { padding: 15px; border-bottom: 2px solid var(--color-accent-brown); background: var(--color-paper-dark); }
+    .srd-header h3 { margin: 0 0 10px 0; font-family: var(--font-title); color: var(--color-dark-brown); font-size: 18px; }
+    .srd-search { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid var(--color-accent-brown); border-radius: 4px; font-family: var(--font-body); margin-bottom: 10px; }
+    .srd-filters { display: flex; gap: 5px; flex-wrap: wrap; }
+    .srd-filter { padding: 4px 8px; border: 1px solid var(--color-accent-brown); border-radius: 12px; background: white; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+    .srd-filter.active { background: var(--color-accent-brown); color: var(--color-paper-light); }
+    .srd-items { flex: 1; overflow-y: auto; padding: 10px; }
+    .srd-loading { text-align: center; padding: 20px; color: var(--color-text-light); font-style: italic; }
+    .srd-item { background: white; border: 1px solid var(--color-accent-brown); border-radius: 6px; padding: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; position: relative; }
+    .srd-item:hover { background: var(--color-paper-light); transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .srd-item-name { font-weight: bold; color: var(--color-dark-brown); font-size: 14px; margin-bottom: 2px; }
+    .srd-item-type { font-size: 11px; color: var(--color-text-light); font-style: italic; }
+    .srd-item-rarity { position: absolute; top: 8px; right: 8px; font-size: 10px; padding: 2px 6px; border-radius: 8px; background: var(--color-accent-brown); color: var(--color-paper-light); text-transform: capitalize; }
+    .srd-item-preview { font-size: 10px; color: var(--color-text-dark); margin-top: 5px; line-height: 1.3; max-height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .srd-add-btn { position: absolute; bottom: 8px; right: 8px; background: var(--color-green); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+    .srd-item:hover .srd-add-btn { opacity: 1; }
+    
+    .main-content { flex: 1; display: flex; flex-direction: column; padding: 20px; min-width: 0; }
+    .controls { background: rgba(244, 241, 232, 0.95); padding: 20px; margin: 0 auto 20px auto; max-width: 1200px; border-radius: 10px; border: 2px solid var(--color-accent-brown); box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+    .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: flex-start; }
+    .control-group { text-align: center; }
+    .control-group h3 { font-family: var(--font-title); color: var(--color-dark-brown); margin: 0 0 10px 0; font-size: 24px; }
+    .control-group button { background: var(--color-accent-brown); color: var(--color-paper-light); border: none; padding: 10px 15px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold; font-family: var(--font-body); transition: all 0.2s; }
+    .control-group button:hover { background: #a0522d; }
+    .control-group button.active { background: var(--color-green); }
+    .control-group button i { margin-right: 8px; }
+    .add-buttons button { background: var(--color-green) !important; }
+    .data-buttons button.import { background: var(--color-blue) !important; }
+    .data-buttons button.export { background: #d84315 !important; }
+    .data-buttons button.purge { background: var(--color-red) !important; }
+    .format-options { display: flex; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+    .format-options label { display: inline-flex; align-items: center; margin: 5px 10px; font-size: 14px; color: var(--color-dark-brown); cursor: pointer; }
+    .format-options input { margin-right: 5px; }
+    #json-import-input { display: none; }
+    
+    #card-container { display: grid; gap: 20px; max-width: 1200px; margin: 0 auto; grid-template-columns: 1fr; }
+    .print-group { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+    .print-group.selected .card { outline: 3px solid var(--color-gold); outline-offset: 2px; }
+
+    .card { background: linear-gradient(145deg, var(--color-paper-light), var(--color-paper-dark)); border: 2px solid var(--color-accent-brown); border-radius: 8px; padding: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); position: relative; page-break-inside: avoid; break-inside: avoid; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease, outline 0.2s ease; box-sizing: border-box; }
+    .card.layout-playing-card { width: 2.5in; height: 3.5in; }
+    .card.layout-index-card, .card.layout-index-folded { width: 5in; height: 3in; }
+    .card.layout-pamphlet-folded { width: 5in; /* Height is set by inline style */ }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
+    .card-body { flex-grow: 1; }
+    .card:not(.card-back) .card-body { overflow: hidden; position: relative; }
+    .card-back .card-body { overflow: visible; }
+    .card-actions { position: absolute; top: 5px; left: 5px; opacity: 0; transition: opacity 0.2s ease; z-index: 10; display: flex; align-items: center; }
+    .card:hover .card-actions { opacity: 1; }
+    .card-action-btn { background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; padding: 0; width: 24px; height: 24px; margin-right: 4px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+    .duplicate-btn { background-color: var(--color-blue) !important; }
+    .delete-btn { background-color: var(--color-red) !important; }
+    .card-select-checkbox { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border: 2px solid var(--color-paper-light); border-radius: 3px; background-color: rgba(0,0,0,0.6); cursor: pointer; position: relative; margin-right: 5px; }
+    .card-select-checkbox:checked { background-color: var(--color-gold); }
+    .card-select-checkbox:checked::after { content: '✔'; color: var(--color-dark-brown); position: absolute; top: -2px; left: 2px; font-weight: bold; }
+    .card-type { position: absolute; top: -10px; right: 8px; background: #6d4c41; color: var(--color-paper-light); padding: 3px 10px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid var(--color-paper-light); }
+    .card-type.item { background: #1e5f99; } .card-type.location { background: #2d7d2d; } .card-type.spell { background: #7b1fa2; } .card-type.npc { background: #d84315; }
+    .card-title { font-family: var(--font-title); font-size: 18px; font-weight: normal; color: var(--color-dark-brown); margin: 0 0 8px 0; border-bottom: 2px solid var(--color-accent-brown); padding-bottom: 4px; line-height: 1.2; }
+    .card-subtitle { font-size: 11px; color: var(--color-text-light); font-style: italic; margin: -4px 0 8px 0; }
+    .card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px; }
+    .stat { text-align: center; background: rgba(139, 69, 19, 0.1); padding: 4px 2px; border-radius: 4px; }
+    .stat-label { font-size: 8px; text-transform: uppercase; color: var(--color-text-light); font-weight: bold; }
+    .stat-value { font-size: 12px; font-weight: bold; color: var(--color-dark-brown); margin-top: 2px; }
+    .card-description { color: var(--color-text-dark); line-height: 1.4; margin-bottom: 8px; font-size: 11px; }
+    .card-properties { background: rgba(139, 69, 19, 0.05); border-left: 3px solid var(--color-accent-brown); padding: 8px; margin-bottom: 8px; border-radius: 0 4px 4px 0; }
+    .property { margin-bottom: 4px; font-size: 10px; line-height: 1.3; }
+    .property-label { font-weight: bold; color: var(--color-text-light); }
+    .card-footer { border-top: 1px solid #d2691e; padding-top: 6px; margin-top: auto; position: relative; }
+    .tag { display: inline-block; background: var(--color-accent-brown); color: var(--color-paper-light); padding: 2px 6px; border-radius: 8px; font-size: 8px; margin: 2px; font-weight: bold; }
+    .escalation-indicator { font-size: 10px; font-style: italic; color: var(--color-text-light); position: absolute; bottom: 4px; right: 4px; }
+    .card-back .card-actions { display: none !important; }
+    .overflow-content { font-size: 11px; line-height: 1.4; color: var(--color-text-dark); }
+    
+    @media print {
+        @page { margin: 0.2in; size: letter; }
+        body { 
+            background: white !important; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact; 
+        }
+        .controls, .srd-browser { display: none !important; }
+        
+        #card-container { display: grid !important; grid-template-columns: 1fr; justify-items: center; gap: 0.2in !important; padding: 0.1in; margin: 0; max-width: none; width: 100%; }
+        .print-group { display: flex !important; width: max-content; gap: 0 !important; page-break-inside: avoid; border: 1px dashed #ccc; padding: 0.05in; }
+        body.printing-selection #card-container .print-group:not(.selected) { display: none !important; }
+        
+        .card { 
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .card.layout-pamphlet-folded { page-break-inside: auto !important; }
+        .card-actions, .escalation-indicator { display: none !important; }
+        
+        body:not(.ink-saver) .card { font-family: var(--font-body) !important; }
+        body:not(.ink-saver) .card-title, body:not(.ink-saver) .card-footer { border-color: var(--color-accent-brown) !important; }
+        
+        body.ink-saver .card {
+            border: 2px dashed #999 !important;
+            background: white !important;
+            color: #000 !important;
+        }
+        body.ink-saver .card-body { font-size: 9pt !important; line-height: 1.2 !important; }
+        body.ink-saver .card-title { font-family: 'Times New Roman', serif !important; font-size: 12pt !important; font-weight: bold !important; border-bottom: 1px dashed #999 !important; color: #000 !important; margin-bottom: 0.05in !important; padding-bottom: 0.02in !important; }
+        body.ink-saver .card-subtitle { font-size: 8pt !important; color: #333 !important; font-style: italic !important; margin-bottom: 0.05in !important; }
+        body.ink-saver .card-description { font-size: 8pt !important; color: #000 !important; line-height: 1.3 !important; margin-bottom: 0.05in !important; }
+        body.ink-saver .stat { background: none !important; border: 1px solid #ccc !important; padding: 0.02in !important; text-align: center !important; border-radius: 2px !important; }
+        body.ink-saver .stat-label { font-size: 6pt !important; text-transform: uppercase !important; color: #000 !important; font-weight: bold !important; display: block !important; }
+        body.ink-saver .stat-value { font-size: 8pt !important; font-weight: bold !important; color: #000 !important; }
+        body.ink-saver .card-properties { background: none !important; border-left: 2px dashed #999 !important; padding: 0.03in !important; margin-bottom: 0.05in !important; border-radius: 0 2px 2px 0 !important; }
+        body.ink-saver .property { font-size: 7pt !important; line-height: 1.2 !important; margin-bottom: 0.02in !important; }
+        body.ink-saver .property-label { font-weight: bold !important; color: #000 !important; }
+        body.ink-saver .card-footer { border-top: 1px dashed #999 !important; margin-top: auto !important; padding-top: 0.02in !important; }
+        body.ink-saver .tag { background: none !important; color: #000 !important; border: 1px solid #999 !important; border-radius: 2px !important; font-size: 6pt !important; padding: 0.01in 0.02in !important; margin-right: 0.02in !important; display: inline-block !important; }
+        body.ink-saver .card-type { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; font-size: 6pt !important; top: 0.02in !important; right: 0.02in !important; border-radius: 2px !important; padding: 0.01in 0.03in !important; position: absolute !important; }
+    }
+</style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="srd-browser" id="srd-browser">
+            <button class="srd-toggle" onclick="toggleSRDBrowser()">SRD COOKBOOK</button>
+            <div class="srd-header">
+                <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                    <span><i class="fa-solid fa-book-open"></i> Universal Search</span>
+                    <button onclick="reloadCookbook()" title="Reload Cookbook from API" style="background:none; border:none; color:var(--color-accent-brown); cursor:pointer; font-size: 14px; padding: 0 5px;">
+                        <i class="fa-solid fa-sync-alt"></i>
+                    </button>
+                </h3>
+                <input type="text" class="srd-search" id="srd-search" placeholder="Search Cookbook & My Cards..." oninput="unifiedSearch()">
+                <div class="srd-filters">
+                    <div class="srd-filter active" data-filter="all" onclick="setSRDFilter(this, 'all')">All</div>
+                    <div class="srd-filter" data-filter="armor" onclick="setSRDFilter(this, 'armor')">Armor</div>
+                    <div class="srd-filter" data-filter="weapon" onclick="setSRDFilter(this, 'weapon')">Weapons</div>
+                    <div class="srd-filter" data-filter="wondrous" onclick="setSRDFilter(this, 'wondrous')">Wondrous</div>
+                    <div class="srd-filter" data-filter="scroll" onclick="setSRDFilter(this, 'scroll')">Scrolls</div>
+                    <div class="srd-filter" data-filter="common" onclick="setSRDFilter(this, 'common')">Common</div>
+                    <div class="srd-filter" data-filter="uncommon" onclick="setSRDFilter(this, 'uncommon')">Uncommon</div>
+                    <div class="srd-filter" data-filter="rare" onclick="setSRDFilter(this, 'rare')">Rare</div>
+                    <div class="srd-filter" data-filter="very-rare" onclick="setSRDFilter(this, 'very-rare')">Very Rare</div>
+                    <div class="srd-filter" data-filter="legendary" onclick="setSRDFilter(this, 'legendary')">Legendary</div>
+                </div>
+            </div>
+            <div class="srd-items" id="srd-items"></div>
+        </div>
+        
+        <div class="main-content">
+            <div class="controls">
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <h3><i class="fa-solid fa-scroll"></i>Add Card</h3>
+                        <div class="add-buttons">
+                            <button onclick="addCard('item')"><i class="fa-solid fa-wand-sparkles"></i>Item</button>
+                            <button onclick="addCard('spell')"><i class="fa-solid fa-book-sparkles"></i>Spell</button>
+                            <button onclick="addCard('npc')"><i class="fa-solid fa-user-shield"></i>NPC</button>
+                            <button onclick="addCard('location')"><i class="fa-solid fa-map-location-dot"></i>Location</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <h3><i class="fa-solid fa-print"></i>Print Tools</h3>
+                         <div class="format-options">
+                            <button onclick="toggleSelectAll()"><i class="fa-solid fa-check-double"></i>Select/Deselect All</button>
+                            <button id="print-selected-btn" onclick="printSelected()"><i class="fa-solid fa-print"></i>Print Selected</button>
+                            <button class="print" onclick="window.print()"><i class="fa-solid fa-print"></i>Print All</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <h3><i class="fa-solid fa-database"></i>Data & Format</h3>
+                        <div class="data-buttons">
+                            <button class="import" onclick="document.getElementById('json-import-input').click()"><i class="fa-solid fa-upload"></i>Import</button>
+                            <input type="file" id="json-import-input" accept=".json">
+                            <button class="export" onclick="exportToJson()"><i class="fa-solid fa-download"></i>Export</button>
+                            <button class="purge" onclick="purgeAllData()"><i class="fa-solid fa-fire-flame-curved"></i>Purge All</button>
+                        </div>
+                         <div class="format-options">
+                            <label><input type="checkbox" id="ink-saver-check" onchange="toggleInkSaver(this.checked)">Ink Saver</label>
+                            <label><input type="checkbox" id="foldable-check" onchange="updateApp()" checked>Foldable Cards</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="card-container" class="card-container"></div>
+        </div>
+    </div>
+
+<script>
+// ===================================================================================
+//  DATA MODEL & STATE MANAGEMENT
+// ===================================================================================
+let cardData = [];
+let srdData = [];
+let currentSRDFilter = 'all';
+
+const initialCards = [
+    {
+        id: Date.now(),
+        type: 'item',
+        title: 'The Tome of Infinite Lore',
+        subtitle: 'Wondrous Item, Legendary',
+        rarity: 'legendary',
+        stats: [ { label: 'Pages', value: '1,000' }, { label: 'Weight', value: '10 lbs' }, { label: 'Usage', value: '1/day' } ],
+        description: 'This is the main description of the Tome of Infinite Lore. It is a very long and detailed description designed specifically to test the card back generation functionality. We need to ensure that this text is long enough to trigger the overflow condition. By adding this very, very, very long paragraph, we can be absolutely certain that the condition is met. This initial text alone should be sufficient, but we will also add several properties to make it even longer and more complex, leaving no doubt in our minds that a card back is required for this specific item. This is a critical test for our print engine.',
+        properties: [
+            { label: 'Effect 1', value: 'The first property of the tome is that it can answer any one question per day. The answer is always true but often cryptic.' },
+            { label: 'Effect 2', value: 'The second property is that reading the tome for one hour grants you advantage on your next Intelligence check.' },
+            { label: 'Effect 3', value: 'The third property is a curse. Each time you use the tome, there is a 5% chance you become obsessed with it and are unwilling to part with it.' },
+            { label: 'Effect 4', value: 'And finally, the fourth property allows you to cast the Legend Lore spell once per week without requiring material components.' }
+        ],
+        tags: ['Book', 'Magical', 'Legendary', 'Cursed', 'Test-Item']
+    },
+    { 
+        id: Date.now() + 1, 
+        type: 'item', 
+        title: 'Ancient Broom', 
+        subtitle: 'Weapon, requires attunement', 
+        rarity: 'artifact', 
+        stats: [ { label: 'Type', value: 'Weapon' }, { label: 'Rarity', value: 'Artifact' }, { label: 'Source', value: 'Level Up Advanced 5e' } ],
+        description: "Subtle power is contained within this ancient oak staff and its coarse bristles, and though it appears as if any amount of rough handling will break this broom only the most potent blades have any chance of harming it. The broom’s handle is said to have come from the first tree and the bristles stolen from a god, but its beginnings are far more humble—just a simple mundane object that accrued its first enchantment by chance after years of exposure to countless rituals. Since then its attraction to magic has grown, and so too has its admiration for the arcane. The broom has been in the hands of countless spellcasters, many of them unlikely candidates to pursue magic, though it cannot remember their names. Only the feats of magic they achieved are of any worth to the broom.\n\n_**Sentience.**_ The broom is a sentient construct with Intelligence 19, Wisdom 15, and Charisma 17. It has hearing and darkvision to a range of 120 feet. The broom communicates with you telepathically and can speak and understand Common, Draconic, Dwarvish, Elvish, Sylvan, and Undercommon.\n\n_**Personality.**_ The broom’s purpose is to encourage the use of magic—the more powerful the better—regardless of any consequences. It is unconcerned with the goings on of mortals or anyone not engaged with magic, and it demands a certain amount of respect and appreciation for its service.\n\n_**Demands.**_ If you are unable to cast spells and attune to the broom, it relentlessly argues for you to pursue magical training and if none is achieved within a month it goes dormant in your hands (becoming a very durable stick). In addition, the broom is a repository of magic over the ages and it strongly encourages you to seek out monsters to harvest powerful reagents, explore cursed ruins in search of forbidden knowledge, and undertake precarious rituals.\n\nYou have a +3 bonus to _attack and damage rolls_ made with the magic broom, and when the broom deals damage with a critical hit the target is _blinded_ until the end of your next turn.",
+        properties: [],
+        tags: ['artifact', 'weapon'] 
+    }
+];
+
+const cardTemplates = {
+    item: { type: 'item', title: '[New Item]', subtitle: '[Type, Rarity]', rarity: 'common', stats: [ { label: 'Stat 1', value: '...' }, { label: 'Stat 2', value: '...' }, { label: 'Stat 3', value: '...' } ], description: 'Item description.', properties: [ { label: 'Property', value: 'Value' } ], tags: ['item'] },
+    spell: { type: 'spell', title: '[New Spell]', subtitle: '[Level, School]', rarity: 'common', stats: [ { label: 'Damage', value: '...' }, { label: 'Range', value: '...' }, { label: 'Save', value: '...' } ], description: 'Spell description.', properties: [ { label: 'Casting Time', value: '1 Action' } ], tags: ['spell'] },
+    npc: { type: 'npc', title: '[New NPC]', subtitle: '[Race, Role]', rarity: 'common', stats: [ { label: 'AC', value: '...' }, { label: 'HP', value: '...' }, { label: 'Speed', value: '...' } ], description: 'NPC description.', properties: [ { label: 'Personality', value: 'Trait' } ], tags: ['npc'] },
+    location: { type: 'location', title: '[New Location]', subtitle: '[Type, Region]', rarity: 'common', stats: [ { label: 'Danger', value: '...' }, { label: 'Travel DC', value: '...' }, { label: 'Size', value: '...' } ], description: 'Location description.', properties: [ { label: 'Features', value: '...' } ], tags: ['location'] }
+};
+
+// ===================================================================================
+//  LIFECYCLE & CORE FUNCTIONS
+// ===================================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    loadSRDData();
+    document.getElementById('json-import-input').addEventListener('change', (event) => {
+        if (event.target.files.length > 0) importFromJson(event.target.files[0]);
+    });
+});
+function parseMarkdown(text = '') {
+    if (!text) return '';
+    text = text.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+    text = text.replace(/Effect::/g, 'Effect:').replace(/__+/g, '_').replace(/\*\*\*/g, '**');
+    text = text.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    text = text.replace(/_(\*\*[^]+?\*\*)_|__(\*\*[^]+?\*\*)__/, (_, g1, g2) => {
+        const inner = (g1 || g2 || '').slice(2, -2); return `<i><b>${inner}</b></i>`;
+    });
+    text = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    text = text.replace(/(?:^|[^\\])_(.*?)_/g, (match, p1) => match.replace(`_${p1}_`, `<i>${p1}</i>`));
+    text = text.replace(/\*(.*?)\*/g, '<i>$1</i>');
+    text = text.replace(/(?:^|\n)([-•]) (.+)/g, (match, bullet, item) => `<ul><li>${item}</li></ul>`);
+    text = text.replace(/<\/ul>\s*<ul>/g, '');
+    text = text.replace(/\n/g, '<br>');
+    return text;
+}
+function reloadCookbook() {
+    if (confirm('This will clear your cached Cookbook and reload it from the Open5e API. Continue?')) {
+        localStorage.removeItem('dnd-srd-custom-data'); srdData = []; loadSRDData();
+        showNotification('Cookbook is reloading from the API...');
+    }
+}
+function unifiedSearch() { renderSRDItems(); updateApp(); }
+async function loadSRDData() {
+    const container = document.getElementById('srd-items');
+    container.innerHTML = `<div class="srd-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading Cookbook...</div>`;
+    const savedSRD = localStorage.getItem('dnd-srd-custom-data');
+    if (savedSRD) { srdData = JSON.parse(savedSRD); renderSRDItems(); return; }
+    try {
+        const response = await fetch('https://api.open5e.com/magicitems/?limit=2000');
+        if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+        const data = await response.json();
+        srdData = data.results.map(item => ({
+            id: item.slug, title: item.name, subtitle: [item.type || 'Wondrous Item', item.requires_attunement && item.requires_attunement !== "false" ? 'requires attunement' : ''].filter(Boolean).join(', '),
+            description: (item.desc || '').trim(), properties: [],
+            stats: [{ label: "Type", value: item.type || 'Unknown' }, { label: "Rarity", value: item.rarity }, { label: "Source", value: item.document__title || 'Unknown' }],
+            rarity: (item.rarity || 'common').toLowerCase().replace(/\s/g, '-'),
+            tags: [(item.rarity || 'common').toLowerCase(), (item.type || '').toLowerCase().split('(')[0].trim()],
+            type: 'item'
+        }));
+        saveSRDData(); 
+    } catch (error) {
+        console.error('Failed to fetch SRD data:', error);
+        container.innerHTML = `<div class="srd-loading">Error loading Cookbook. Check connection and refresh.</div>`;
+    } finally { renderSRDItems(); }
+}
+function saveSRDData() { localStorage.setItem('dnd-srd-custom-data', JSON.stringify(srdData)); }
+function renderSRDItems() {
+    const container = document.getElementById('srd-items');
+    const searchTerm = document.getElementById('srd-search').value.toLowerCase();
+    let filteredItems = srdData;
+    if (searchTerm) { filteredItems = filteredItems.filter(item => `${item.title} ${item.subtitle} ${item.description}`.toLowerCase().includes(searchTerm)); }
+    if (currentSRDFilter !== 'all') {
+        const filterSpaced = currentSRDFilter.replace('-', ' ');
+        filteredItems = filteredItems.filter(item => {
+            const itemProps = `${item.subtitle} ${item.rarity} ${(item.tags || []).join(' ')}`.toLowerCase();
+            return itemProps.includes(currentSRDFilter) || itemProps.includes(filterSpaced);
+        });
+    }
+    container.innerHTML = filteredItems.length > 0 ? filteredItems.map(item => `<div class="srd-item"><div class="srd-item-name">${item.title}</div><div class="srd-item-type">${item.subtitle}</div><div class="srd-item-rarity">${item.rarity}</div><div class="srd-item-preview">${parseMarkdown((item.description || '').substring(0,150))}...</div><button class="srd-add-btn" onclick="addSRDItem('${item.id}')"><i class="fa-solid fa-plus"></i> Add</button></div>`).join('') : `<div class="srd-loading">${srdData.length > 0 ? 'No items found.' : ''}</div>`;
+}
+function setSRDFilter(element, filter) {
+    document.querySelectorAll('.srd-filter').forEach(f => f.classList.remove('active'));
+    element.classList.add('active'); currentSRDFilter = filter; renderSRDItems();
+}
+function toggleSRDBrowser() { document.getElementById('srd-browser').classList.toggle('collapsed'); }
+function addSRDItem(itemId) {
+    const srdItem = srdData.find(i => i.id == itemId);
+    if (srdItem) {
+        const newCard = { ...JSON.parse(JSON.stringify(srdItem)), id: Date.now() + Math.random() };
+        cardData.unshift(newCard); updateApp(); showNotification(`Added "${srdItem.title}" to your cards!`);
+    }
+}
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `position: fixed; top: 20px; right: 20px; background: var(--color-green); color: white; padding: 10px 15px; border-radius: 5px; z-index: 10000; font-family: var(--font-body); box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: opacity 0.5s;`;
+    notification.textContent = message; document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 500);
+    }, 2500);
+}
+function addCard(type) { const newCard = { ...JSON.parse(JSON.stringify(cardTemplates[type])), id: Date.now() + Math.random() }; cardData.unshift(newCard); updateApp(); }
+function duplicateCard(cardId) { const originalCard = cardData.find(card => card.id == cardId); if (originalCard) { const duplicatedCard = { ...JSON.parse(JSON.stringify(originalCard)), id: Date.now() + Math.random(), title: originalCard.title + ' (Copy)' }; const originalIndex = cardData.findIndex(card => card.id == cardId); cardData.splice(originalIndex + 1, 0, duplicatedCard); updateApp(); } }
+function deleteCard(cardId) { if (confirm('Are you sure?')) { cardData = cardData.filter(card => card.id != cardId); updateApp(); } }
+function purgeAllData() { if (confirm('This will delete ALL cards. Are you sure?')) { cardData = []; updateApp(); } }
+function promoteToSRD(cardId) { const cardToPromote = cardData.find(card => card.id == cardId); if (!cardToPromote) return; if (srdData.some(item => item.title.toLowerCase() === cardToPromote.title.toLowerCase())) { alert(`An item named "${cardToPromote.title}" already exists.`); return; } const newSrdItem = JSON.parse(JSON.stringify(cardToPromote)); newSrdItem.id = 'srd-custom-' + Date.now(); if(!newSrdItem.tags.includes('custom')) newSrdItem.tags.push('custom'); srdData.unshift(newSrdItem); saveSRDData(); renderSRDItems(); showNotification(`Promoted "${newSrdItem.title}" to the Cookbook!`); }
+function saveData() { localStorage.setItem('dnd-card-app-data', JSON.stringify(cardData)); }
+function loadData() { const savedData = localStorage.getItem('dnd-card-app-data'); cardData = savedData ? JSON.parse(savedData) : initialCards; const inkSaver = localStorage.getItem('dnd-ink-saver') === 'true'; document.getElementById('ink-saver-check').checked = inkSaver; toggleInkSaver(inkSaver); updateApp(); }
+function importFromJson(file) { const reader = new FileReader(); reader.onload = (e) => { try { const importedData = JSON.parse(e.target.result); if (Array.isArray(importedData)) { const newCards = importedData.map(card => ({ ...card, id: Date.now() + Math.random() })); cardData = cardData.concat(newCards); updateApp(); alert(`Successfully imported ${newCards.length} cards!`); } else { alert('Invalid JSON format.'); } } catch (error) { alert('Error parsing JSON file: ' + error.message); } }; reader.readAsText(file); document.getElementById('json-import-input').value = ''; }
+function exportToJson() { if (cardData.length === 0) { alert("There are no cards to export."); return; } const dataStr = JSON.stringify(cardData, null, 2); const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr); const linkElement = document.createElement('a'); linkElement.setAttribute('href', dataUri); linkElement.setAttribute('download', 'dnd-cards.json'); linkElement.click(); }
+function toggleSelection(checkbox) { checkbox.closest('.print-group').classList.toggle('selected', checkbox.checked); }
+function toggleSelectAll() { const visibleGroups = document.querySelectorAll('#card-container .print-group'); if (visibleGroups.length === 0) return; const allAreSelected = Array.from(visibleGroups).every(group => group.classList.contains('selected')); visibleGroups.forEach(group => { const shouldBeSelected = !allAreSelected; group.classList.toggle('selected', shouldBeSelected); const checkbox = group.querySelector('.card-select-checkbox'); if (checkbox) checkbox.checked = shouldBeSelected; }); }
+function printSelected() { if (document.querySelectorAll('#card-container .print-group.selected').length === 0) { alert('Please select at least one card to print.'); return; } document.body.classList.add('printing-selection'); window.print(); setTimeout(() => document.body.classList.remove('printing-selection'), 500); }
+function toggleInkSaver(enabled) { document.body.classList.toggle('ink-saver', enabled); localStorage.setItem('dnd-ink-saver', enabled); }
+
+// ===================================================================================
+//  MAIN APP LOGIC & RENDERING
+// ===================================================================================
+function updateApp() {
+    const filteredUserCards = getFilteredUserCards();
+    const cardGroups = [];
+    
+    const foldable = document.getElementById('foldable-check').checked;
+
+    filteredUserCards.forEach(card => {
+        const { frontVersion, backVersion } = processCardForOverflow(card, foldable);
+        cardGroups.push({
+            id: card.id,
+            front: frontVersion,
+            back: backVersion
+        });
+    });
+
+    renderCardGroups(cardGroups);
+    saveData();
+}
+
+function getFilteredUserCards() {
+    const searchTerm = document.getElementById('srd-search').value.toLowerCase();
+    if (!searchTerm) return cardData;
+    return cardData.filter(card => `${card.title} ${card.subtitle} ${card.type} ${card.description} ${(card.tags || []).join(' ')}`.toLowerCase().includes(searchTerm));
+}
+
+function renderCardGroups(groups) {
+    const container = document.getElementById('card-container');
+    if (!container) return;
+    
+    container.innerHTML = groups.map(group => {
+        const groupEl = document.querySelector(`.print-group[data-id='${group.id}']`);
+        const isSelected = groupEl ? groupEl.classList.contains('selected') : false;
+        
+        const frontHtml = getCardInnerHtml(group.front, isSelected);
+        const backHtml = group.back ? getCardInnerHtml(group.back, isSelected) : '';
+        
+        return `<div class="print-group ${isSelected ? 'selected' : ''}" data-id="${group.id}">
+                    ${frontHtml}
+                    ${backHtml}
+                </div>`;
+    }).join('');
+
+    container.querySelectorAll('.card:not(.card-back)[data-id]').forEach(cardEl => {
+        const cardDataObject = cardData.find(c => c.id == cardEl.dataset.id);
+        if (cardDataObject) addEditingListeners(cardEl, cardDataObject);
+    });
+}
+
+function getCardInnerHtml(card, isSelected) {
+    let escalationIndicatorText = '';
+    switch(card.layoutMode) {
+        case 'layout-playing-card': escalationIndicatorText = 'Playing Card'; break;
+        case 'layout-index-card': escalationIndicatorText = 'Index Card'; break;
+        case 'layout-index-folded': escalationIndicatorText = 'Index Card (Foldable)'; break;
+        case 'layout-pamphlet-folded': escalationIndicatorText = 'Pamphlet (Foldable)'; break;
+    }
+    const escalationIndicator = `<div class="escalation-indicator">${escalationIndicatorText}</div>`;
+
+    const style = card.finalHeight ? `style="height: ${card.finalHeight}px"` : '';
+
+    if (card.isBack) {
+        return `<div class="card card-back ${card.layoutMode}" ${style} data-id="${card.id}">
+            <div class="card-type ${card.type}">${card.type}</div>
+            <h2 class="card-title">${card.title}</h2>
+            <div class="card-subtitle">${card.subtitle}</div>
+            <div class="card-body">${card.overflowContent}</div>
+            <div class="card-footer">
+                ${(card.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                ${escalationIndicator}
+            </div>
+        </div>`;
+    }
+    
+    const propertiesHtml = (card.properties || []).map((prop, i) => `<div class="property" data-index="${i}"><span class="property-label" contenteditable="true" data-prop="properties" data-subprop="label">${prop.label || ''}:</span> <span contenteditable="true" data-prop="properties" data-subprop="value">${parseMarkdown(prop.value || '')}</span></div>`).join('');
+    
+    return `<div class="card ${card.layoutMode}" ${style} data-id="${card.id}">
+        <div class="card-actions">
+            <input type="checkbox" class="card-select-checkbox" onclick="toggleSelection(this)" title="Select for printing" ${isSelected ? 'checked' : ''}>
+            <button class="card-action-btn" onclick="promoteToSRD('${card.id}')" title="Promote to Cookbook" style="background-color: var(--color-gold) !important;"><i class="fa-solid fa-star"></i></button>
+            <button class="card-action-btn duplicate-btn" onclick="duplicateCard('${card.id}')" title="Duplicate"><i class="fa-solid fa-copy"></i></button>
+            <button class="card-action-btn delete-btn" onclick="deleteCard('${card.id}')" title="Delete"><i class="fa-solid fa-trash-alt"></i></button>
+        </div>
+        <div class="card-type ${card.type}">${card.type}</div>
+        <h2 class="card-title" contenteditable="true" data-prop="title">${card.title}</h2>
+        <div class="card-subtitle" contenteditable="true" data-prop="subtitle">${card.subtitle}</div>
+        <div class="card-body">
+            <div class="card-stats">${(card.stats || []).map((stat, i) => `<div class="stat" data-index="${i}"><div class="stat-label" contenteditable="true" data-prop="stats" data-subprop="label">${stat.label || ''}</div><div class="stat-value" contenteditable="true" data-prop="stats" data-subprop="value">${stat.value || ''}</div></div>`).join('')}</div>
+            <div class="card-description" contenteditable="true" data-prop="description">${parseMarkdown(card.description)}</div>
+            <div class="card-properties">${propertiesHtml}</div>
+        </div>
+        <div class="card-footer">${(card.tags || []).map(tag => `<span class="tag" contenteditable="true" data-prop="tags">${tag || ''}</span>`).join('')}${escalationIndicator}</div>
+    </div>`;
+}
+
+function addEditingListeners(cardEl, card) {
+    cardEl.querySelectorAll('[contenteditable="true"]').forEach(el => {
+        el.addEventListener('blur', function() {
+            const prop = this.dataset.prop; if (!prop) return;
+            const newValue = this.textContent;
+            if (this.dataset.subprop) {
+                const index = this.closest('[data-index]').dataset.index;
+                if (card[prop]?.[index]) card[prop][index][this.dataset.subprop] = newValue;
+            } else if (prop === 'tags') {
+                card.tags = Array.from(cardEl.querySelectorAll('.tag[contenteditable="true"]')).map(t => t.textContent.trim()).filter(Boolean);
+            } else { card[prop] = newValue; }
+            updateApp();
+        });
+    });
+}
+
+// ===================================================================================
+//  CARD OVERFLOW & LAYOUT LOGIC
+// ===================================================================================
+function processCardForOverflow(originalCard, foldable = true) {
+    const cardConfig = {
+        playing: { width: 2.5 * 96, bodyHeight: 3.5 * 96 - 130 }, 
+        index:   { width: 5 * 96,   bodyHeight: 3 * 96 - 130 },   
+    };
+
+    const measurer = document.createElement('div');
+    measurer.style.cssText = `position: absolute; visibility: hidden; pointer-events: none; font-family: Lora, serif; font-size: 11px; line-height: 1.4; box-sizing: border-box;`;
+    document.body.appendChild(measurer);
+
+    const fullContentHtml = `<div class="card-stats">${(originalCard.stats || []).map(() => '<div></div>').join('')}</div><div class="card-description">${parseMarkdown(originalCard.description)}</div><div class="card-properties">${(originalCard.properties || []).map(p => `<div>${p.label}: ${parseMarkdown(p.value)}</div>`).join('')}</div>`;
+    
+    measurer.style.width = `${cardConfig.playing.width - 24}px`;
+    measurer.innerHTML = fullContentHtml;
+    const heightAtPlayingWidth = measurer.scrollHeight;
+
+    measurer.style.width = `${cardConfig.index.width - 24}px`;
+    measurer.innerHTML = fullContentHtml;
+    const heightAtIndexWidth = measurer.scrollHeight;
+    
+    document.body.removeChild(measurer);
+
+    let layoutMode, frontVersion, backVersion = null, finalHeight = null;
+
+    if (!foldable || heightAtPlayingWidth <= cardConfig.playing.bodyHeight) {
+        layoutMode = 'layout-playing-card';
+    } else if (heightAtIndexWidth <= cardConfig.index.bodyHeight) {
+        layoutMode = 'layout-index-card';
+    } else if (heightAtIndexWidth <= cardConfig.index.bodyHeight * 2) {
+        layoutMode = 'layout-index-folded';
+    } else {
+        layoutMode = 'layout-pamphlet-folded';
+        finalHeight = (heightAtIndexWidth / 2) + 140; 
+    }
+
+    if (layoutMode === 'layout-playing-card' || layoutMode === 'layout-index-card') {
+        frontVersion = { ...originalCard, layoutMode };
+        return { frontVersion, backVersion };
+    }
+
+    const { frontContent, backContentHTML } = splitContent(originalCard, layoutMode, finalHeight, cardConfig);
+    frontVersion = { ...JSON.parse(JSON.stringify(originalCard)), ...frontContent, layoutMode, finalHeight };
+    backVersion = { ...JSON.parse(JSON.stringify(originalCard)), isBack: true, id: originalCard.id + '_back', title: originalCard.title + ' (Cont.)', overflowContent: backContentHTML, layoutMode, finalHeight, stats:[], description:'', properties:[] };
+    
+    return { frontVersion, backVersion };
+}
+
+function splitContent(card, layoutMode, finalHeight, cardConfig) {
+    const SAFETY_MARGIN = 10;
+    const capacity = (finalHeight ? finalHeight - 140 : cardConfig.index.bodyHeight) - SAFETY_MARGIN;
+    const width = cardConfig.index.width - 24;
+
+    const measurer = document.createElement('div');
+    measurer.style.cssText = `position: absolute; visibility: hidden; pointer-events: none; font-family: Lora, serif; font-size: 11px; line-height: 1.4; box-sizing: border-box; width: ${width}px;`;
+    document.body.appendChild(measurer);
+
+    let frontDescription = '';
+    let frontProperties = [];
+    let backContent = [];
+    let isOverflowing = false;
+
+    const measureCurrentFront = () => {
+        measurer.innerHTML = `<div class="card-stats">${(card.stats || []).map(() => '<div></div>').join('')}</div><div class="card-description">${parseMarkdown(frontDescription)}</div><div class="card-properties">${frontProperties.map(p => `<div>${p.label}: ${parseMarkdown(p.value)}</div>`).join('')}</div>`;
+        return measurer.scrollHeight;
+    };
+    
+    if (card.description) {
+        const words = card.description.split(/(\s+)/);
+        let tempDesc = '';
+        for (const word of words) {
+            const lastGoodDesc = tempDesc;
+            tempDesc += word;
+            frontDescription = tempDesc;
+            if (measureCurrentFront() > capacity) {
+                frontDescription = lastGoodDesc.trim();
+                const remainingIndex = card.description.indexOf(frontDescription) + frontDescription.length;
+                backContent.push({ type: 'description', text: card.description.substring(remainingIndex).trim() });
+                isOverflowing = true;
+                break;
+            }
+        }
+    }
+    
+    if (!isOverflowing && card.properties) {
+        for (const prop of card.properties) {
+            frontProperties.push(prop);
+            if (measureCurrentFront() > capacity) {
+                frontProperties.pop(); 
+                const propIndex = card.properties.indexOf(prop);
+                backContent.push(...card.properties.slice(propIndex).map(p => ({...p, type: 'property'})));
+                break;
+            }
+        }
+    } else if (isOverflowing && card.properties) {
+        backContent.push(...card.properties.map(p => ({...p, type: 'property'})));
+    }
+
+    document.body.removeChild(measurer);
+
+    let backContentHTML = '';
+    const backDesc = backContent.find(c => c.type === 'description');
+    if (backDesc && backDesc.text.trim()) {
+        backContentHTML += `<div class="card-description"><strong>Description (Continued):</strong><br>${parseMarkdown(backDesc.text)}</div>`;
+    }
+    const backProps = backContent.filter(c => c.type === 'property');
+    if (backProps.length > 0) {
+        if(backContentHTML) backContentHTML += `<hr style="border:0; border-top:1px dashed var(--color-accent-brown); margin:8px 0;">`;
+        const title = backContent.some(c => c.type === 'description' && c.text.trim()) ? 'Properties (Continued):' : 'Properties:';
+        backContentHTML += `<div><strong>${title}</strong><div class="card-properties">${backProps.map(p => `<div class="property"><span class="property-label">${p.label}:</span> <span>${parseMarkdown(p.value)}</span></div>`).join('')}</div></div>`;
+    }
+
+    return { 
+        frontContent: { description: frontDescription, properties: frontProperties },
+        backContentHTML: backContentHTML || ' ' 
+    };
+}
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js').then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }, err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+</script>
+</body>
+</html>
