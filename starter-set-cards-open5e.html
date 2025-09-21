@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 5e Statblock Cards</title>
+    
+    <!-- Fonts and Libraries -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:700" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+       @import url('https://db.onlinewebfonts.com/c/424b8aede804aa7c4ccf56674de5ca09?family=Scaly+Sans+Remake');
+        @font-face {
+            font-family: 'ScalySans';
+            src: url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.eot");
+            src: url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.eot?#iefix")format("embedded-opentype"),
+            url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.woff2")format("woff2"),
+            url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.woff")format("woff"),
+            url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.ttf")format("truetype"),
+            url("https://db.onlinewebfonts.com/t/424b8aede804aa7c4ccf56674de5ca09.svg#Scaly Sans Remake")format("svg");
+        }
+        @font-face {
+            font-family: 'ScalySansCaps';
+            src: url('https://cdn.jsdelivr.net/gh/naturalcrit/homebrewery@master/themes/fonts/5e/Scaly%20Sans%20Caps.woff2') format('woff2');
+        }
+
+        :root {
+            --card-width: 5in; --card-height: 3.5in; --font-header: 'ScalySansCaps', 'Libre Baskerville', sans-serif; --font-body: 'ScalySans', 'Noto Sans', sans-serif; --accent-color: #6f1f11; --background-color: #ffffff; --page-background: #f0f0f0; --border-color: #d6d0c9; --table-red: #ece5de; --table-yellow: #f3ede3; --table-purple: #e8e4e1; --table-green: #e5e8e2; --shadow-color: rgba(0, 0, 0, 0.15); --text-color: #000; --light-text-color: #888; --button-color: #6f1f11; --button-add-color: #28a745; --button-danger-color: #dc3545;
+        }
+        body.theme-modern {
+            --font-header: 'Poppins', sans-serif; --font-body: 'Roboto', sans-serif; --accent-color: #3366cc; --background-color: #ffffff; --page-background: #f0f2f5; --border-color: #dee2e6; --table-red: #f8f9fa; --table-yellow: #f8f9fa; --table-purple: #f8f9fa; --table-green: #f8f9fa; --shadow-color: rgba(0, 0, 0, 0.1); --text-color: #212529; --light-text-color: #6c757d; --button-color: #3366cc; --button-add-color: #27ae60; --button-danger-color: #e74c3c;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--page-background); margin: 0; padding: 20px; line-height: 1.4; color: var(--text-color); }
+        .page-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .page-header h1 { font-family: var(--font-header); font-size: 2.5em; margin: 0 0 5px 0; display: inline-flex; align-items: center; gap: 15px; }
+        .page-header h1 i { color: var(--accent-color); }
+        .page-header p { margin: 0; font-size: 1.1em; color: var(--light-text-color); }
+        .main-container { display: grid; grid-template-columns: minmax(350px, 1fr) 3fr; gap: 30px; align-items: start; max-width: 1800px; margin: 0 auto; }
+        .sidebar { position: sticky; top: 20px; background: var(--background-color); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px var(--shadow-color); }
+        .control-group { margin-bottom: 20px; }
+        .control-group h3 { font-family: var(--font-header); margin: 0 0 15px 0; font-size: 1.2em; border-bottom: 1.5px solid var(--border-color); padding-bottom: 2px; display: flex; align-items: center; }
+        .control-group h3 i { color: var(--accent-color); margin-right: 10px; }
+        .control-group button { background: var(--button-color); color: white; border: none; padding: 10px 15px; margin: 5px 0; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: var(--font-body); transition: background-color 0.2s; width: 100%; }
+        .control-group button:hover { opacity: 0.9; }
+        .control-group button i { margin-right: 8px; }
+        .control-group button.btn-primary { background-color: var(--button-add-color); }
+        .control-group button.btn-danger { background-color: var(--button-danger-color); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-family: var(--font-header); color: var(--accent-color); }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-family: var(--font-body); background: var(--background-color); color: var(--text-color); }
+        .ability-scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .ability-score { display: flex; flex-direction: column; min-width: 0; }
+        .ability-score input[type="number"] { width: 100%; min-width: 45px; }
+        .ability-modifier { font-size: 0.8em; color: var(--light-text-color); margin-top: 2px; }
+        .ability-save-row { display: flex; align-items: center; gap: 2px; margin-top: 5px; flex-wrap: wrap; }
+        .save-input { width: 30px; text-align: center; min-width: 30px; flex-shrink: 0; }
+        .prof-checkbox-label { display: flex; align-items: center; font-size: 0.7em; white-space: nowrap; }
+        .prof-checkbox { width: auto; margin: 0 1px 0 2px; flex-shrink: 0; }
+        .prof-text { font-size: 0.7em; color: var(--accent-color); }
+        .tab-list { list-style: none; padding: 0; margin: 0 0 20px 0; display: flex; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 10px 20px; cursor: pointer; margin-right: 5px; background: var(--page-background); border-radius: 5px 5px 0 0; }
+        .tab.active { border: 1px solid var(--border-color); border-bottom: 1px solid var(--background-color); background-color: var(--background-color); font-weight: bold; color: var(--accent-color); margin-bottom: -1px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        #card-output { display: flex; flex-wrap: wrap; justify-content: flex-start; align-content: flex-start; gap: 20px; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .card-wrapper { position: relative; animation: fadeIn 0.4s ease-out; }
+        .card-controls { position: absolute; top: 5px; right: 5px; z-index: 10; display: flex; gap: 5px; opacity: 0; transition: opacity 0.2s ease-in-out; }
+        .card-wrapper:hover .card-controls { opacity: 1; }
+        .card-controls button { background-color: rgba(255, 255, 255, 0.8); border: 1px solid var(--border-color); color: var(--text-color); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; }
+        .card-controls button:hover { background-color: white; color: var(--accent-color); }
+        #empty-state { width: 100%; text-align: center; padding: 80px 40px; color: var(--light-text-color); border: 3px dashed var(--border-color); border-radius: 10px; }
+        #empty-state i { font-size: 5em; margin-bottom: 20px; display: block; }
+        #empty-state h2 { font-family: var(--font-header); color: var(--text-color); font-size: 2em; margin: 0 0 10px 0; }
+        .monster-card { width: var(--card-width); height: var(--card-height); background: var(--background-color); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 10px; line-height: 1.3; position: relative; box-shadow: 0 1px 4px var(--shadow-color); margin-bottom: 10px; }
+        .monster-card::before { content: ""; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px; border: 1px solid var(--border-color); border-radius: 7px; pointer-events: none; }
+        .monster-name { font-family: var(--font-header); font-size: 20px; color: var(--accent-color); margin: 0 0 3px 0; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; text-transform: uppercase; min-height: 24px; }
+        .monster-type { font-style: italic; color: var(--light-text-color); margin: 3px 0 10px 0; font-size: 10px; min-height: 1.3em; }
+        .left-column, .right-column { display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .basic-stats { margin-bottom: 8px; font-size: 9px; display: flex; justify-content: space-between; align-items: flex-start; line-height: 1.5; }
+        .stat-line strong { color: var(--accent-color); font-family: var(--font-header); text-transform: uppercase; font-size: 0.9em; margin-right: 0.5em; width: 3.5em; }
+        .stat-line span { font-weight: bold; }
+        .initiative-stat strong { width: auto; }
+        .ability-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .ability-table th { color: var(--light-text-color); font-weight: normal; font-size: 6px; text-align: center; padding: 0; height: 8px; }
+        .ability-table td { padding: 1px 2px; text-align: center; height: 12px; font-size: 8px; font-weight: bold; }
+        .ability-table td.ability-name { color: var(--accent-color); text-transform: uppercase; text-align: left; padding-left: 3px; font-size: 7px; width: 22px; }
+        .ability-scores .ability-table:nth-child(1), .ability-scores .ability-table:nth-child(4) { background-color: var(--table-red); }
+        .ability-scores .ability-table:nth-child(1) .ability-name, .ability-scores .ability-table:nth-child(4) .ability-name { background-color: var(--table-yellow); }
+        .ability-scores .ability-table:nth-child(2), .ability-scores .ability-table:nth-child(5) { background-color: var(--table-purple); }
+        .ability-scores .ability-table:nth-child(2) .ability-name, .ability-scores .ability-table:nth-child(5) .ability-name { background-color: var(--table-green); }
+        .ability-scores .ability-table:nth-child(3), .ability-scores .ability-table:nth-child(6) { background-color: var(--table-red); }
+        .ability-scores .ability-table:nth-child(3) .ability-name, .ability-scores .ability-table:nth-child(6) .ability-name { background-color: var(--table-yellow); }
+        .secondary-stats { font-size: 7.5px; margin-bottom: 8px; line-height: 1.4; }
+        .stat-label { color: var(--accent-color); font-family: var(--font-header); text-transform: uppercase; font-size: 0.9em; margin-right: 0.5em; flex-shrink: 0; }
+        .section-header { font-weight: 600; color: var(--accent-color); font-size: 11px; margin-bottom: 4px; border-bottom: 1.5px solid var(--accent-color); padding-bottom: 2px; font-family: var(--font-header); text-transform: uppercase; }
+        .action-item { margin-bottom: 4px; font-size: 8px; line-height: 1.3; word-break: break-word; }
+        .action-name { font-weight: bold; font-style: italic; }
+        .challenge-rating { position: absolute; top: 0px; right: 0px; background: var(--background-color); color: var(--accent-color); border: 1.5px solid var(--accent-color); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; font-family: var(--font-header); }
+        .monster-card.back { grid-template-columns: 1fr; }
+        .monster-card.back .left-column { display: none; }
+        .monster-card.back .monster-name { font-size: 16px; margin-bottom: 8px; }
+        .overflow-indicator { font-size: 8px; color: var(--light-text-color); font-style: italic; position: absolute; bottom: 0; left: 0; }
+        
+        /* --- NEW CATALOG STYLES --- */
+        #monster-catalog-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; font-family: var(--font-body); }
+        .catalog-container { background: var(--background-color); color: var(--text-color); width: 90%; max-width: 1400px; height: 90vh; border-radius: 10px; display: flex; flex-direction: column; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .catalog-header { padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .catalog-header h2 { margin: 0; color: var(--accent-color); font-family: var(--font-header); font-size: 1.8em; }
+        .catalog-header #close-catalog { background: none; border: none; font-size: 2em; cursor: pointer; color: var(--text-color); }
+        .catalog-body { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column;}
+        .catalog-filters { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 20px; margin-bottom: 20px; align-items: end; }
+        .catalog-filters .filter-group { display: flex; flex-direction: column; }
+        .catalog-filters .search-group { grid-column: 1 / 2; } 
+        .catalog-filters label { text-transform: uppercase; font-size: 0.9em; margin-bottom: 8px; }
+        .catalog-filters select, .catalog-filters input { padding: 10px; }
+        .quick-cr-group { display: flex; gap: 5px; }
+        .quick-cr-group button { font-size: 0.9em; padding: 10px; background-color: var(--border-color); color: var(--text-color); flex: 1; border: 1px solid var(--border-color); }
+        .quick-cr-group button:hover { opacity: 0.8; }
+        .quick-cr-group button.active { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
+        #clear-filters-btn { background-color: var(--button-danger-color); padding: 10px; height: 100%; }
+        .sources-group { grid-column: 1 / -1; padding-top: 15px; border-top: 1px solid var(--border-color); }
+        .source-filters { display: flex; flex-wrap: wrap; gap: 40px; } /* Increased gap */
+        .source-filter-item { display: flex; align-items: center; gap: 8px; }
+        .source-filter-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
+        .source-filter-item label { font-size: 0.9em; text-transform: uppercase; font-family: var(--font-header); cursor: pointer; text-align: center; line-height: 1.1; margin: 0; }
+        #catalog-results { flex: 1; border: 1px solid var(--border-color); border-radius: 5px; padding: 15px; background: var(--page-background); }
+        .monster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .monster-catalog-item { border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; background: var(--background-color); transition: transform 0.2s, box-shadow 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .monster-catalog-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px var(--shadow-color); }
+        .monster-preview h4 { margin: 0 0 5px 0; color: var(--accent-color); font-family: var(--font-header); }
+        .monster-meta { margin: 0; font-size: 0.9em; color: var(--light-text-color); }
+        .source-tag { background: var(--accent-color); color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; font-weight: bold; }
+        .catalog-item-actions { display: flex; gap: 5px; }
+        .catalog-item-actions button { background: var(--button-color); color: white; border: none; width: 32px; height: 32px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .catalog-item-actions button:hover { opacity: 0.8; }
+        #catalog-initial-prompt { text-align: center; padding: 40px 20px; color: var(--light-text-color); display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;}
+        #catalog-initial-prompt i { font-size: 4em; margin-bottom: 20px; }
+
+        @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } .catalog-filters { grid-template-columns: 1fr; } }
+        @media print { body { background: white; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .sidebar, .monster-card::before, .page-header, .card-controls, #monster-catalog-modal { display: none; } .main-container, #card-output { display: block; } .monster-card { box-shadow: none; border: none; } .card-wrapper { page-break-inside: avoid; } @page { size: letter; margin: 0.5in; } }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1><i class="fas fa-hammer"></i> 5e Statblock Cards</h1>
+        <p>A 5th Edition Monster Card Creator - Powered by Open5e</p>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="control-group">
+                <h3><i class="fas fa-tools"></i> Tools</h3>
+                <button type="button" id="generate-card-btn" class="btn-primary"><i class="fas fa-id-card"></i> Generate Card</button>
+                <button type="button" id="export-btn"><i class="fas fa-download"></i> Export as Image</button>
+                <button type="button" onclick="printCards()"><i class="fas fa-print"></i> Print Cards</button>
+                <button type="button" id="clear-all-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> Clear All Cards</button>
+            </div>
+            <div class="control-group">
+                <h3><i class="fas fa-book-open"></i> Monster Catalog</h3>
+                <button type="button" id="open-catalog-btn"><i class="fas fa-search"></i> Browse Monsters</button>
+            </div>
+            <div class="control-group">
+                <h3><i class="fas fa-paint-brush"></i> Theme</h3>
+                <button id="theme-toggle-btn" onclick="toggleTheme()"><i class="fas fa-exchange-alt"></i> Toggle Theme</button>
+            </div>
+            <ul class="tab-list">
+                <li class="tab active" id="editor-tab-btn">Form Editor</li>
+                <li class="tab" id="markdown-tab-btn">Markdown</li>
+            </ul>
+            <div id="editor-tab" class="tab-content active">
+                <div class="control-group">
+                    <button type="button" id="paste-monster-btn"><i class="fas fa-paste"></i> Paste Homebrewery Format</button>
+                </div>
+                <form id="monster-form">
+                    <div class="form-group"><label for="monster-name">Monster Name</label><input type="text" id="monster-name"></div>
+                    <div class="form-group"><label for="monster-size">Size</label><select id="monster-size"><option value="Tiny">Tiny</option><option value="Small">Small</option><option value="Medium" selected>Medium</option><option value="Large">Large</option><option value="Huge">Huge</option><option value="Gargantuan">Gargantuan</option></select></div>
+                    <div class="form-group"><label for="monster-type">Type</label><input type="text" id="monster-type"></div>
+                    <div class="form-group"><label for="monster-alignment">Alignment</label><input type="text" id="monster-alignment"></div>
+                    <div class="form-group"><label for="monster-ac">Armor Class</label><input type="number" id="monster-ac" min="0"></div>
+                    <div class="form-group"><label for="monster-hp">Hit Points</label><input type="text" id="monster-hp"></div>
+                    <div class="form-group"><label for="monster-speed">Speed</label><input type="text" id="monster-speed"></div>
+                    <div class="form-group"><label for="monster-initiative">Initiative</label><input type="text" id="monster-initiative"></div>
+                    <div class="form-group"><label>Ability Scores</label><div class="ability-scores">
+                        <div class="ability-score"><label for="str">STR</label><input type="number" id="str" min="1" value="10"><div class="ability-modifier" id="str-mod">+0</div><div class="ability-save-row"><label for="str-save">Save:</label><input type="text" id="str-save" class="save-input" value="+0"><label class="prof-checkbox-label"><input type="checkbox" id="str-prof" class="prof-checkbox"><span class="prof-text">Prof</span></label></div></div>
+                        <div class="ability-score"><label for="dex">DEX</label><input type="number" id="dex" min="1" value="10"><div class="ability-modifier" id="dex-mod">+0</div><div class="ability-save-row"><label for="dex-save">Save:</label><input type="text" id="dex-save" class="save-input" value="+0"><label class="prof-checkbox-label"><input type="checkbox" id="dex-prof" class="prof-checkbox"><span class="prof-text">Prof</span></label></div></div>
+                        <div class="ability-score"><label for="con">CON</label><input type="number" id="con" min="1" value="10"><div class="ability-modifier" id="con-mod">+0</div><div class="ability-save-row"><label for="con-save">Save:</label><input type="text" id="con-save" class="save-input" value="+0"><label class="prof-checkbox-label"><input type="checkbox" id="con-prof" class="prof-checkbox"><span class="prof-text">Prof</span></label></div></div>
+                        <div class="ability-score"><label for="int">INT</label><input type="number" id="int" min="1" value="10"><div class="ability-modifier" id="int-mod">+0</div><div class="ability-save-row"><label for="int-save">Save:</label><input type="text" id="int-save" class="save-input" value="+0"><label class="prof-checkbox-label"><input type="checkbox" id="int-prof" class="prof-checkbox"><span class="prof-text">Prof</span></label></div></div>
+                        <div class="ability-score"><label for="wis">WIS</label><input type="number" id="wis" min="1" value="10"><div class="ability-modifier" id="wis-mod">+0</div><div class="ability-save-row"><label for="wis-save">Save:</label><input type="text" id="wis-save" class="save-input" value="+0"><label class="prof-checkbox-label"><input type="checkbox" id="wis-prof" class="prof-checkbox"><span class="prof-text">Prof</span></label></div></div>
+                        <div class="ability-score"><label for="cha">CHA</label><input type="number" id="cha" min="1" value="10"><div class="ability-modifier" id="cha-mod">+0</div><div class="ability-save-row"><label for="cha-save">Save:</label><input type="text" id="cha-save" class="save-input" value="+0"><label class="prof-checkbox-label"><input type="checkbox" id="cha-prof" class="prof-checkbox"><span class="prof-text">Prof</span></label></div></div>
+                    </div></div>
+                    <div class="form-group"><label for="monster-skills">Skills</label><input type="text" id="monster-skills"></div>
+                    <div class="form-group"><label for="monster-resistances">Damage Resistances</label><input type="text" id="monster-resistances"></div>
+                    <div class="form-group"><label for="monster-immunities">Damage Immunities</label><input type="text" id="monster-immunities"></div>
+                    <div class="form-group"><label for="monster-vulnerabilities">Damage Vulnerabilities</label><input type="text" id="monster-vulnerabilities"></div>
+                    <div class="form-group"><label for="monster-senses">Senses</label><input type="text" id="monster-senses"></div>
+                    <div class="form-group"><label for="monster-languages">Languages</label><input type="text" id="monster-languages"></div>
+                    <div class="form-group"><label for="monster-cr">Challenge Rating</label><input type="text" id="monster-cr"></div>
+                    <div class="form-group"><label for="monster-traits">Traits</label><textarea id="monster-traits" rows="4"></textarea></div>
+                    <div class="form-group"><label for="monster-actions">Actions</label><textarea id="monster-actions" rows="4"></textarea></div>
+                    <div class="form-group"><label for="monster-reactions">Reactions</label><textarea id="monster-reactions" rows="4"></textarea></div>
+                    <div class="form-group"><label for="monster-legendary">Legendary Actions</label><textarea id="monster-legendary" rows="4"></textarea></div>
+                </form>
+            </div>
+            <div id="markdown-tab" class="tab-content">
+                <div class="form-group">
+                    <label for="markdown-input">Markdown Format</label>
+                    <div id="drop-zone" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 10px; background: var(--background-color); transition: all 0.3s;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2em; color: var(--light-text-color); margin-bottom: 10px; display: block;"></i>
+                        <p style="margin: 0; color: var(--light-text-color);">Drop your .md file here or paste text below</p>
+                    </div>
+                    <textarea id="markdown-input" rows="20"></textarea>
+                </div>
+                <div class="control-group">
+                    <button type="button" id="import-btn"><i class="fas fa-upload"></i> Import Markdown</button>
+                    <button type="button" id="export-markdown-btn"><i class="fas fa-file-export"></i> Export to Markdown</button>
+                </div>
+            </div>
+        </aside>
+        <main id="card-output">
+            <div id="empty-state">
+                <i class="fas fa-scroll"></i>
+                <h2>Your Monster Compendium is Empty</h2>
+                <p>Use the form on the left to forge a new creature.</p>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Paste monster modal -->
+    <div id="paste-monster-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
+        <div style="background-color: var(--background-color); margin: 10% auto; padding: 20px; width: 80%; max-width: 800px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            <span id="close-paste-modal" style="float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            <h2 style="color: var(--accent-color); font-family: var(--font-header);">Paste Homebrewery Format</h2>
+            <textarea id="paste-monster-input" placeholder="## Monster Name..." style="width: 100%; min-height: 300px; margin-bottom: 15px;"></textarea>
+            <button type="button" id="process-paste-btn" style="background: var(--button-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;"><i class="fas fa-cogs"></i> Process Monster</button>
+        </div>
+    </div>
+
+    <!-- Monster Catalog Modal -->
+<div id="monster-catalog-modal">
+    <div class="catalog-container">
+        <div class="catalog-header">
+            <h2>Monster Catalog</h2>
+            <button id="close-catalog">&times;</button>
+        </div>
+        <div class="catalog-body">
+            <div class="catalog-filters">
+                <div class="filter-group search-group">
+                    <label for="monster-search">Search:</label>
+                    <input type="text" id="monster-search" placeholder="By name (3+ characters)...">
+                </div>
+                <div class="filter-group">
+                    <label for="cr-filter">Challenge Rating:</label>
+                    <select id="cr-filter"></select>
+                </div>
+                <div class="filter-group">
+                    <label for="type-filter">Creature Type:</label>
+                    <select id="type-filter"></select>
+                </div>
+                <div class="filter-group">
+                    <label>Quick CR:</label>
+                    <div class="quick-cr-group">
+                        <button data-range="0-2">0-2</button>
+                        <button data-range="3-5">3-5</button>
+                        <button data-range="6-10">6-10</button>
+                        <button data-range="11-15">11-15</button>
+                        <button data-range="16-99">16+</button>
+                    </div>
+                </div>
+                 <div class="filter-group">
+                    <label>&nbsp;</label> <!-- Spacer for alignment -->
+                    <button id="clear-filters-btn">Clear All Filters</button>
+                </div>
+                <div class="filter-group sources-group">
+                    <label>Sources:</label>
+                    <div class="source-filters"></div>
+                </div>
+            </div>
+            <div id="catalog-results">
+                 <div id="catalog-initial-prompt">
+                    <i class="fas fa-search"></i>
+                    <h3>Enter search criteria or select filters to find monsters</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CORE APPLICATION LOGIC ---
+    function getModifier(score) { return Math.floor((score - 10) / 2); }
+    function formatModifier(mod) { return mod >= 0 ? `+${mod}` : `${mod}`; }
+    
+    function getProficiencyBonus(cr) {
+        let crValue = 0;
+        if (typeof cr === 'string') {
+            if (cr.includes('/')) {
+                try { crValue = eval(cr.split(' ')[0]); } catch { crValue = 0; }
+            } else {
+                crValue = parseFloat(cr.split(' ')[0] || cr);
+            }
+        } else { crValue = cr; }
+        if (isNaN(crValue)) return 2;
+        if (crValue < 5) return 2; if (crValue < 9) return 3; if (crValue < 13) return 4;
+        if (crValue < 17) return 5; if (crValue < 21) return 6; if (crValue < 25) return 7;
+        if (crValue < 29) return 8; return 9;
+    }
+
+    function initSaveProficiency() {
+        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        const crInput = document.getElementById('monster-cr');
+        abilities.forEach(ability => {
+            document.getElementById(`${ability}-prof`).addEventListener('change', function() {
+                const profBonus = getProficiencyBonus(crInput.value || '0');
+                const score = parseInt(document.getElementById(ability).value) || 10;
+                const baseMod = getModifier(score);
+                document.getElementById(`${ability}-save`).value = this.checked ? formatModifier(baseMod + profBonus) : formatModifier(baseMod);
+            });
+        });
+        crInput.addEventListener('input', () => {
+            const profBonus = getProficiencyBonus(crInput.value || '0');
+            abilities.forEach(ability => {
+                if (document.getElementById(`${ability}-prof`).checked) {
+                    const score = parseInt(document.getElementById(ability).value) || 10;
+                    document.getElementById(`${ability}-save`).value = formatModifier(getModifier(score) + profBonus);
+                }
+            });
+        });
+    }
+
+    function updateModifiers() {
+        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        const profBonus = getProficiencyBonus(document.getElementById('monster-cr').value || '0');
+        abilities.forEach(ability => {
+            const scoreInput = document.getElementById(ability);
+            if (!scoreInput) return;
+            const score = parseInt(scoreInput.value) || 10;
+            const mod = getModifier(score);
+            document.getElementById(`${ability}-mod`).textContent = formatModifier(mod);
+            const saveInput = document.getElementById(`${ability}-save`);
+            if (document.getElementById(`${ability}-prof`).checked) {
+                saveInput.value = formatModifier(mod + profBonus);
+            } else {
+                saveInput.value = formatModifier(mod);
+            }
+        });
+    }
+
+    function setInitialSaveProficiencies() {
+        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        abilities.forEach(ability => {
+            const scoreInput = document.getElementById(ability);
+            if (!scoreInput) return;
+            const score = parseInt(scoreInput.value) || 10;
+            const baseMod = getModifier(score);
+            const saveInput = document.getElementById(`${ability}-save`);
+            if (saveInput.value && saveInput.value !== formatModifier(baseMod)) {
+                document.getElementById(`${ability}-prof`).checked = true;
+            } else {
+                document.getElementById(`${ability}-prof`).checked = false;
+            }
+        });
+    }
+
+    function parseSection(text) {
+        if (!text) return [];
+        return text.replace(/\*\*/g, '').split('\n\n').filter(line => line.trim()).map(line => {
+            const dotIndex = line.indexOf('. ');
+            if (dotIndex === -1) return { name: line.trim(), description: '' };
+            return { name: line.substring(0, dotIndex).trim(), description: line.substring(dotIndex + 2).trim() };
+        });
+    }
+
+    function generateCard() {
+        try {
+            const monster = {
+                name: document.getElementById('monster-name').value || 'Monster',
+                size: document.getElementById('monster-size').value || 'Medium',
+                type: document.getElementById('monster-type').value || 'Beast',
+                alignment: document.getElementById('monster-alignment').value || 'Unaligned',
+                ac: document.getElementById('monster-ac').value || '10',
+                hp: document.getElementById('monster-hp').value || '10',
+                speed: document.getElementById('monster-speed').value || '30 ft.',
+                initiative: document.getElementById('monster-initiative').value || '+0',
+                str: parseInt(document.getElementById('str').value) || 10,
+                dex: parseInt(document.getElementById('dex').value) || 10,
+                con: parseInt(document.getElementById('con').value) || 10,
+                int: parseInt(document.getElementById('int').value) || 10,
+                wis: parseInt(document.getElementById('wis').value) || 10,
+                cha: parseInt(document.getElementById('cha').value) || 10,
+                skills: document.getElementById('monster-skills').value || '',
+                resistances: document.getElementById('monster-resistances').value || '',
+                immunities: document.getElementById('monster-immunities').value || '',
+                vulnerabilities: document.getElementById('monster-vulnerabilities').value || '',
+                senses: document.getElementById('monster-senses').value || '',
+                languages: document.getElementById('monster-languages').value || '',
+                cr: document.getElementById('monster-cr').value || '0',
+                id: Date.now()
+            };
+            ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(a => { monster[a + 'Save'] = document.getElementById(a + '-save').value; });
+            ['traits', 'actions', 'reactions', 'legendary'].forEach(s => { monster[s] = parseSection(document.getElementById(`monster-${s}`).value); });
+            const cardOutput = document.getElementById('card-output');
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) emptyState.style.display = 'none';
+            cardOutput.insertAdjacentHTML('beforeend', generateCardHTML(monster));
+            const newCardWrapper = document.getElementById(`card-${monster.id}`);
+            if (newCardWrapper) {
+                newCardWrapper.querySelector('.delete-card-btn').addEventListener('click', () => newCardWrapper.remove());
+                newCardWrapper.querySelector('.edit-card-btn').addEventListener('click', () => {
+                    applyMonsterDataToForm(monster);
+                    switchTab('editor');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+            setTimeout(() => checkForCardOverflow(monster, `card-${monster.id}`), 100);
+        } catch (error) {
+            console.error('Error generating card:', error);
+            alert('An error occurred. Check console for details.');
+        }
+    }
+
+    function clearAllCards() {
+        document.getElementById('card-output').innerHTML = `<div id="empty-state"><i class="fas fa-scroll"></i><h2>Your Monster Compendium is Empty</h2><p>Use the form on the left to forge a new creature.</p></div>`;
+    }
+
+    function clearFormFields() { document.getElementById('monster-form').reset(); updateModifiers(); }
+
+    function checkForCardOverflow(monster, cardWrapperId) {
+        const cardWrapper = document.getElementById(cardWrapperId);
+        if (!cardWrapper) return;
+        const frontCard = cardWrapper.querySelector('.monster-card.front');
+        const frontRightCol = frontCard?.querySelector('.right-column');
+        if (!frontRightCol || frontRightCol.scrollHeight <= frontRightCol.clientHeight) return;
+        let backCard = cardWrapper.querySelector('.monster-card.back');
+        if (!backCard) {
+            backCard = document.createElement('div');
+            backCard.className = 'monster-card back';
+            backCard.innerHTML = `<div class="right-column"><div class="monster-name">${monster.name} (CONTINUED)</div></div>`;
+            cardWrapper.appendChild(backCard);
+        }
+        const backRightCol = backCard.querySelector('.right-column');
+        let iterations = 0;
+        while (frontRightCol.scrollHeight > frontRightCol.clientHeight && iterations < 100) {
+            const lastSectionOnFront = frontRightCol.querySelector('.actions-section:last-of-type');
+            if (!lastSectionOnFront) break;
+            const lastItem = lastSectionOnFront.querySelector('.action-item:last-of-type');
+            if (!lastItem) { lastSectionOnFront.remove(); continue; }
+            const sectionTitle = lastSectionOnFront.querySelector('.section-header').textContent;
+            let backSection = backRightCol.querySelector(`[data-section-title="${sectionTitle}"]`);
+            if (!backSection) {
+                backSection = document.createElement('div');
+                backSection.className = 'actions-section';
+                backSection.dataset.sectionTitle = sectionTitle;
+                backSection.innerHTML = `<div class="section-header">${sectionTitle}</div>`;
+                backRightCol.insertBefore(backSection, backRightCol.children[1]);
+            }
+            backSection.insertBefore(lastItem, backSection.children[1]);
+            if (lastSectionOnFront.querySelectorAll('.action-item').length === 0) lastSectionOnFront.remove();
+            iterations++;
+        }
+        if (cardWrapper.querySelector('.monster-card.back .actions-section')) {
+            const indicator = document.createElement('div');
+            indicator.className = 'overflow-indicator';
+            indicator.textContent = '(continued...)';
+            frontRightCol.appendChild(indicator);
+        } else {
+            backCard.remove();
+        }
+    }
+    
+    function generateCardHTML(monster) {
+        const getCR = () => monster.cr.split(' ')[0] || monster.cr || '0';
+        const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+        return `<div class="card-wrapper" id="card-${monster.id}"><div class="card-controls"><button type="button" class="edit-card-btn" title="Edit this monster"><i class="fas fa-pencil-alt"></i></button><button type="button" class="delete-card-btn" title="Delete this monster"><i class="fas fa-times"></i></button></div><div class="monster-card front"><div class="left-column"><div class="monster-name">${monster.name}</div><div class="monster-type">${monster.size} ${monster.type}, ${monster.alignment}</div><div class="basic-stats"><div class="basic-stats-group"><div class="stat-line"><strong>AC</strong> <span>${monster.ac}</span></div><div class="stat-line"><strong>HP</strong> <span>${monster.hp}</span></div><div class="stat-line"><strong>Speed</strong> <span>${monster.speed}</span></div></div><div class="stat-line initiative-stat"><strong>Initiative</strong> <span>${monster.initiative}</span></div></div><div class="ability-scores">${abilities.map(ab=>`<table class="ability-table"><thead><tr><th></th><th></th><th>MOD</th><th>SAVE</th></tr></thead><tbody><tr><td class="ability-name">${ab}</td><td>${monster[ab]}</td><td>${formatModifier(getModifier(monster[ab]))}</td><td>${monster[ab+'Save']}</td></tr></tbody></table>`).join('')}</div><div class="secondary-stats">${monster.skills?`<div class="stat-block-line"><span class="stat-label">Skills</span> <span>${monster.skills}</span></div>`:''}${monster.resistances?`<div class="stat-block-line"><span class="stat-label">Resistances</span> <span>${monster.resistances}</span></div>`:''}${monster.immunities?`<div class="stat-block-line"><span class="stat-label">Immunities</span> <span>${monster.immunities}</span></div>`:''}${monster.vulnerabilities?`<div class="stat-block-line"><span class="stat-label">Vulnerabilities</span> <span>${monster.vulnerabilities}</span></div>`:''}${monster.senses?`<div class="stat-block-line"><span class="stat-label">Senses</span> <span>${monster.senses}</span></div>`:''}${monster.languages?`<div class="stat-block-line"><span class="stat-label">Languages</span> <span>${monster.languages}</span></div>`:''}</div></div><div class="right-column"><div class="challenge-rating">${getCR()}</div>${['traits','actions','reactions','legendary'].map(section=>monster[section] && monster[section].length>0?`<div class="actions-section"><div class="section-header">${section==='legendary'?'Legendary Actions':section.charAt(0).toUpperCase()+section.slice(1)}</div>${monster[section].map(item=>`<div class="action-item"><span class="action-name">${item.name}.</span> ${item.description}</div>`).join('')}</div>`:'').join('')}</div></div></div>`;
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('theme-modern');
+        localStorage.setItem('theme', document.body.classList.contains('theme-modern') ? 'modern' : 'classic');
+    }
+
+    async function exportAsImage() {
+        const cardWrappers = document.querySelectorAll('.card-wrapper');
+        if (cardWrappers.length === 0) return alert('No cards to export.');
+        const exportBtn = document.getElementById('export-btn');
+        const originalBtnText = exportBtn.innerHTML;
+        exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+        exportBtn.disabled = true;
+        try {
+            for (const wrapper of cardWrappers) {
+                const card = wrapper.querySelector('.monster-card');
+                const name = card.querySelector('.monster-name')?.textContent || 'monster';
+                const canvas = await html2canvas(card, { backgroundColor: null, scale: 2 });
+                const link = document.createElement('a');
+                link.download = `${name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        } catch (error) { console.error('Error exporting image:', error); } 
+        finally { exportBtn.innerHTML = originalBtnText; exportBtn.disabled = false; }
+    }
+    
+    function parseHomebreweryFormat(text) {
+        const monsterData = {};
+        const headerMatch = text.match(/##\s+([^\n]+)\n\s*\*([^*]+)\*/m);
+        if (headerMatch) {
+            monsterData.name = headerMatch[1].trim();
+            const typeText = headerMatch[2].trim();
+            const typeMatch = typeText.match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+([^,]+),\s*(.+)$/i);
+            if (typeMatch) {
+                monsterData.size = typeMatch[1];
+                monsterData.type = typeMatch[2].trim();
+                monsterData.alignment = typeMatch[3].trim();
+            } else {
+                const parts = typeText.split(',');
+                if (parts.length >= 2) {
+                    monsterData.alignment = parts[parts.length - 1].trim();
+                    const sizeType = parts[0].trim();
+                    const sizeMatch = sizeType.match(/^(Tiny|Small|Medium|Large|Huge|Gargantuan)\s+(.+)$/i);
+                    if (sizeMatch) {
+                        monsterData.size = sizeMatch[1];
+                        monsterData.type = sizeMatch[2];
+                    }
+                }
+            }
+        }
+
+        let statsMatch = text.match(/\{\{stats\s*([\s\S]*?)(?=\s*###|\}\})/m);
+        if (statsMatch) {
+            const statsContent = statsMatch[1];
+            const vitalsMatch = statsContent.match(/\{\{vitals\s*([\s\S]*?)\s*\}\}/m);
+            if (vitalsMatch) {
+                const vitalsContent = vitalsMatch[1];
+                const acMatch = vitalsContent.match(/\*\*AC\*\*\s*::\s*([^\n\\]+)/);
+                if (acMatch) monsterData.ac = acMatch[1].trim();
+                const hpMatch = vitalsContent.match(/\*\*HP\*\*\s*::\s*([^\n\\]+)/);
+                if (hpMatch) monsterData.hp = hpMatch[1].trim();
+                const speedMatch = vitalsContent.match(/\*\*Speed\*\*\s*::\s*([^\n\\]+)/);
+                if (speedMatch) monsterData.speed = speedMatch[1].trim();
+            }
+
+            const tablesMatch = statsContent.match(/\{\{tables\s*([\s\S]*?)\s*\}\}/m);
+            if (tablesMatch) {
+                const tablesContent = tablesMatch[1];
+                const abilityRegex = /\|(Str|Dex|Con|Int|Wis|Cha)\|\s*(\d+)\s*\|\s*([+-]\d+|--\d+)\s*\|/gi;
+                let abilityMatch;
+                while ((abilityMatch = abilityRegex.exec(tablesContent)) !== null) {
+                    const ability = abilityMatch[1].toLowerCase();
+                    const score = parseInt(abilityMatch[2]);
+                    monsterData[ability] = score;
+                }
+            }
+            
+            const skillsMatch = statsContent.match(/\*\*Skills\*\*\s*::\s*([^\n]+)/);
+            if (skillsMatch) monsterData.skills = skillsMatch[1].trim();
+            const immunitiesMatch = statsContent.match(/\*\*Immunities\*\*\s*::\s*([^\n]+)/);
+            if (immunitiesMatch) monsterData.immunities = immunitiesMatch[1].trim();
+            const resistancesMatch = statsContent.match(/\*\*Resistances\*\*\s*::\s*([^\n]+)/);
+            if (resistancesMatch) monsterData.resistances = resistancesMatch[1].trim();
+            const vulnerabilitiesMatch = statsContent.match(/\*\*Vulnerabilities\*\*\s*::\s*([^\n]+)/);
+            if (vulnerabilitiesMatch) monsterData.vulnerabilities = vulnerabilitiesMatch[1].trim();
+            const sensesMatch = statsContent.match(/\*\*Senses\*\*\s*::\s*([^\n]+)/);
+            if (sensesMatch) monsterData.senses = sensesMatch[1].trim();
+            const languagesMatch = statsContent.match(/\*\*Languages\*\*\s*::\s*([^\n]+)/);
+            if (languagesMatch) monsterData.languages = languagesMatch[1].trim();
+            const crMatch = statsContent.match(/\*\*CR\*\*\s*::\s*([^\n]+)/);
+            if (crMatch) monsterData.cr = crMatch[1].trim();
+        }
+        
+        function extractSection(sectionName) {
+            const sectionRegex = new RegExp('###\\s*' + sectionName + '\\s*\\n([\\s\\S]*?)(?=###|\\}\\}|$)', 'i');
+            const sectionMatch = text.match(sectionRegex);
+            if (sectionMatch) {
+                let content = sectionMatch[1].trim();
+                content = content.replace(/ \*\*\*(.*?)\.\*\*\* /g, '**$1.** ');
+                content = content.replace(/\*\*/g, '');
+                return content.replace(/(\r\n|\n|\r)/gm, "\n\n");
+            }
+            return '';
+        }
+        
+        monsterData.traits = extractSection('Traits');
+        monsterData.actions = extractSection('Actions');
+        monsterData.reactions = extractSection('Reactions');
+        monsterData.legendary = extractSection('Legendary Actions');
+        
+        return monsterData;
+    }
+    
+    function applyMonsterDataToForm(data) {
+        if (!data) return;
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val !== undefined && val !== null) el.value = val;
+        };
+        
+        setVal('monster-name', data.name);
+        setVal('monster-size', data.size);
+        setVal('monster-type', data.type);
+        setVal('monster-alignment', data.alignment);
+        setVal('monster-ac', data.ac);
+        setVal('monster-hp', data.hp);
+        setVal('monster-speed', data.speed);
+        setVal('monster-initiative', data.initiative);
+        ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(ab => {
+            setVal(ab, data[ab]);
+            setVal(`${ab}-save`, data[`${ab}Save`]);
+        });
+        setVal('monster-skills', data.skills);
+        setVal('monster-resistances', data.resistances);
+        setVal('monster-immunities', data.immunities);
+        setVal('monster-vulnerabilities', data.vulnerabilities);
+        setVal('monster-senses', data.senses);
+        setVal('monster-languages', data.languages);
+        setVal('monster-cr', data.cr);
+        setVal('monster-traits', data.traits);
+        setVal('monster-actions', data.actions);
+        setVal('monster-reactions', data.reactions);
+        setVal('monster-legendary', data.legendary);
+        updateModifiers();
+        setInitialSaveProficiencies();
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(`${tabName}-tab-btn`).classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+
+    function initDragAndDrop() {
+        const dropZone = document.getElementById('drop-zone');
+        if(!dropZone) return;
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => { ev.preventDefault(); ev.stopPropagation(); }, false);
+            document.body.addEventListener(e, (ev) => { ev.preventDefault(); ev.stopPropagation(); }, false);
+        });
+        ['dragenter', 'dragover'].forEach(e => dropZone.addEventListener(e, () => dropZone.style.borderColor = 'var(--accent-color)', false));
+        ['dragleave', 'drop'].forEach(e => dropZone.addEventListener(e, () => dropZone.style.borderColor = 'var(--border-color)', false));
+        dropZone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file && (file.type.match('text/markdown') || file.name.endsWith('.md'))) {
+                const reader = new FileReader();
+                reader.onload = (ev) => document.getElementById('markdown-input').value = ev.target.result;
+                reader.readAsText(file);
+            } else { alert('Please drop a .md file.'); }
+        }, false);
+    }
+
+    // --- NEW MONSTER CATALOG SYSTEM (with Advanced Filters) ---
+    class MonsterCatalog {
+        constructor() {
+            this.baseURL = 'https://api.open5e.com/monsters/';
+            this.allowedSources = ['wotc-srd', 'tob', 'tob2', 'cc', 'menagerie', 'blackflag'];
+            this.allMonsters = [];
+            this.isLoaded = false;
+            
+            this.modal = document.getElementById('monster-catalog-modal');
+            this.resultsContainer = document.getElementById('catalog-results');
+            this.searchInput = document.getElementById('monster-search');
+            this.crSelect = document.getElementById('cr-filter');
+            this.typeSelect = document.getElementById('type-filter');
+            this.quickCrButtons = this.modal.querySelectorAll('.quick-cr-group button');
+            this.clearFiltersBtn = document.getElementById('clear-filters-btn');
+            this.sourceFiltersContainer = this.modal.querySelector('.source-filters');
+        }
+
+        init() {
+            this.modal.querySelector('#close-catalog').addEventListener('click', () => this.close());
+            let debounceTimer;
+            this.searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => this.performSearch(), 300);
+            });
+            this.crSelect.addEventListener('change', () => { this.clearQuickCrActiveState(); this.performSearch(); });
+            this.typeSelect.addEventListener('change', () => this.performSearch());
+            this.clearFiltersBtn.addEventListener('click', () => this.clearFilters());
+            this.quickCrButtons.forEach(btn => btn.addEventListener('click', (e) => this.handleQuickCrClick(e)));
+            this.populateSourceFilters();
+        }
+
+        populateSourceFilters() {
+            this.sourceFiltersContainer.innerHTML = this.allowedSources.map(source => {
+                const displayName = this.getSourceDisplayName(source);
+                return `<div class="source-filter-item">
+                            <input type="checkbox" class="source-filter" value="${source}" id="source-${source}" checked>
+                            <label for="source-${source}">${displayName.replace(' ', '<br>')}</label>
+                        </div>`;
+            }).join('');
+            this.sourceFiltersContainer.querySelectorAll('.source-filter').forEach(cb => cb.addEventListener('change', () => this.performSearch()));
+        }
+        
+                // This is the full replacement for the fetchAllMonsters method in the MonsterCatalog class
+        async fetchAllMonsters() {
+            if (this.isLoaded) return;
+            
+            this.resultsContainer.innerHTML = `<div id="catalog-initial-prompt"><i class="fas fa-spinner fa-spin"></i><h3>Loading monster database...</h3></div>`;
+
+            try {
+                // We will build the monster list from a mix of cached and freshly fetched sources.
+                const promises = this.allowedSources.map(source => {
+                    const cacheKey = `monster-cache-${source}`; // e.g., 'monster-cache-wotc-srd'
+                    const cachedData = sessionStorage.getItem(cacheKey);
+
+                    if (cachedData) {
+                        // If this source is in the cache, use it directly.
+                        console.log(`Loading ${source} from session cache...`);
+                        return Promise.resolve(JSON.parse(cachedData));
+                    } else {
+                        // If not in the cache, fetch it from the API.
+                        console.log(`Fetching ${source} from API and caching...`);
+                        return fetch(`${this.baseURL}?document__slug=${source}&limit=2000`)
+                            .then(res => res.json())
+                            .then(data => {
+                                const monsters = (data.results || []).map(monster => ({ ...monster, source: source }));
+                                // Save THIS source's data to its own cache key.
+                                sessionStorage.setItem(cacheKey, JSON.stringify(monsters));
+                                return monsters;
+                            });
+                    }
+                });
+
+                // Promise.allSettled is safer because it will continue even if one source fails to load.
+                const results = await Promise.allSettled(promises);
+
+                this.allMonsters = results
+                    .filter(result => result.status === 'fulfilled' && result.value) // Only use successful loads
+                    .flatMap(result => result.value); // Flatten all the arrays into one big list
+
+                if (this.allMonsters.length === 0) {
+                    throw new Error("No monsters were loaded from any source.");
+                }
+
+                this.populateDynamicFilters();
+                this.isLoaded = true;
+                this.clearFilters();
+
+            } catch (error) {
+                console.error('Failed to load monster catalog:', error);
+                this.resultsContainer.innerHTML = `<div id="catalog-initial-prompt" style="color:var(--button-danger-color);"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load monster catalog.</h3><p style="font-size: 0.8em;">${error.message}</p></div>`;
+            }
+        }
+
+        populateDynamicFilters() {
+            const crs = [...new Set(this.allMonsters.map(m => m.challenge_rating))];
+            const types = [...new Set(this.allMonsters.map(m => m.type.split(' ')[0].replace(/,$/, '')))];
+            crs.sort((a, b) => this.parseCrToNumber(a) - this.parseCrToNumber(b));
+            types.sort();
+            this.crSelect.innerHTML = '<option value="">All CRs</option>' + crs.map(cr => `<option value="${cr}">${cr}</option>`).join('');
+            this.typeSelect.innerHTML = '<option value="">All Types</option>' + types.map(type => `<option value="${type}">${type.charAt(0).toUpperCase() + type.slice(1)}</option>`).join('');
+        }
+        
+        handleQuickCrClick(e) {
+            const clickedButton = e.currentTarget;
+            if (clickedButton.classList.contains('active')) {
+                clickedButton.classList.remove('active');
+            } else {
+                this.clearQuickCrActiveState();
+                clickedButton.classList.add('active');
+            }
+            this.crSelect.value = '';
+            this.performSearch();
+        }
+
+        performSearch() {
+            const searchTerm = this.searchInput.value.trim().toLowerCase();
+            const selectedCr = this.crSelect.value;
+            const selectedType = this.typeSelect.value.toLowerCase();
+            const selectedSources = Array.from(this.sourceFiltersContainer.querySelectorAll('.source-filter:checked')).map(cb => cb.value);
+            const activeQuickCr = this.modal.querySelector('.quick-cr-group button.active');
+            if (!searchTerm && !selectedCr && !selectedType && !activeQuickCr) {
+                this.resultsContainer.innerHTML = `<div id="catalog-initial-prompt"><i class="fas fa-search"></i><h3>Enter search criteria or select filters to find monsters</h3></div>`;
+                return;
+            }
+            let filtered = this.allMonsters;
+            if (searchTerm.length >= 3) { filtered = filtered.filter(m => m.name.toLowerCase().includes(searchTerm)); }
+            if (selectedCr) { filtered = filtered.filter(m => m.challenge_rating === selectedCr); }
+            if (selectedType) { 
+                filtered = filtered.filter(m => m.type.toLowerCase().includes(selectedType)); 
+            }
+            if (selectedSources.length < this.allowedSources.length) { filtered = filtered.filter(m => selectedSources.includes(m.source)); }
+            if (activeQuickCr) {
+                const [min, max] = activeQuickCr.dataset.range.split('-').map(Number);
+                filtered = filtered.filter(m => {
+                    const crNum = this.parseCrToNumber(m.challenge_rating);
+                    return crNum >= min && crNum <= max;
+                });
+            }
+            this.renderResults(filtered);
+        }
+        
+        clearFilters() {
+            this.searchInput.value = '';
+            this.crSelect.value = '';
+            this.typeSelect.value = '';
+            this.clearQuickCrActiveState();
+            this.sourceFiltersContainer.querySelectorAll('.source-filter').forEach(cb => cb.checked = true);
+            this.performSearch();
+        }
+
+        renderResults(monsters) {
+             if (monsters.length === 0) {
+                this.resultsContainer.innerHTML = '<div id="catalog-initial-prompt"><i class="fas fa-box-open"></i><h3>No monsters found matching criteria.</h3></div>';
+                return;
+            }
+            this.resultsContainer.innerHTML = `<div class="monster-grid">${monsters.sort((a,b)=>a.name.localeCompare(b.name)).map(m=>this.renderMonsterItem(m)).join('')}</div>`;
+            this.resultsContainer.querySelectorAll('.load-monster-btn, .preview-monster-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const item = e.target.closest('.monster-catalog-item');
+                    const monsterData = JSON.parse(decodeURIComponent(item.dataset.monster));
+                    if (e.currentTarget.classList.contains('load-monster-btn')) this.loadMonsterToEditor(monsterData);
+                    else this.showMonsterPreview(monsterData);
+                });
+            });
+        }
+        
+        renderMonsterItem(monster) {
+            const encodedData = encodeURIComponent(JSON.stringify(monster));
+            return `<div class="monster-catalog-item" data-monster='${encodedData}'><div class="monster-preview"><h4>${monster.name}</h4><p class="monster-meta">CR ${monster.challenge_rating} • ${monster.size} ${monster.type} • <span class="source-tag">${this.getSourceDisplayName(monster.source)}</span></p></div><div class="catalog-item-actions"><button class="load-monster-btn" title="Load into editor"><i class="fas fa-edit"></i></button><button class="preview-monster-btn" title="Quick preview"><i class="fas fa-eye"></i></button></div></div>`;
+        }
+
+        loadMonsterToEditor(data) {
+            const convertedData = this.convertOpen5eToForm(data);
+            applyMonsterDataToForm(convertedData);
+            this.close();
+            switchTab('editor');
+            if (confirm('Monster data loaded. Generate the card now?')) generateCard();
+        }
+
+        convertOpen5eToForm(data) {
+            const dexMod = Math.floor(((data.dexterity || 10) - 10) / 2);
+            const parseSpeed = (s) => s ? Object.entries(s).map(([k, v]) => `${k} ${v}ft.`).join(', ') : "30 ft.";
+            const parseSkills = (s) => s ? Object.entries(s).map(([k, v]) => `${k.charAt(0).toUpperCase() + k.slice(1)} ${formatModifier(v)}`).join(', ') : "";
+            const formatAbilities = (a) => a ? a.map(i => `${i.name}. ${i.desc}`).join('\n\n') : '';
+            return {
+                name: data.name||'', size:data.size||'Medium', type:data.type||'beast', alignment:data.alignment||'unaligned', ac:data.armor_class?.toString()||'10', hp:data.hit_points?`${data.hit_points} (${data.hit_dice})`:'10 (1d8+2)', speed:parseSpeed(data.speed), initiative:formatModifier(dexMod), str:data.strength||10, dex:data.dexterity||10, con:data.constitution||10, int:data.intelligence||10, wis:data.wisdom||10, cha:data.charisma||10, strSave:data.strength_save?formatModifier(data.strength_save):formatModifier(getModifier(data.strength||10)), dexSave:data.dexterity_save?formatModifier(data.dexterity_save):formatModifier(getModifier(data.dexterity||10)), conSave:data.constitution_save?formatModifier(data.constitution_save):formatModifier(getModifier(data.constitution||10)), intSave:data.intelligence_save?formatModifier(data.intelligence_save):formatModifier(getModifier(data.intelligence||10)), wisSave:data.wisdom_save?formatModifier(data.wisdom_save):formatModifier(getModifier(data.wisdom||10)), chaSave:data.charisma_save?formatModifier(data.charisma_save):formatModifier(getModifier(data.charisma||10)), skills:parseSkills(data.skills), resistances:data.damage_resistances||'', immunities:data.damage_immunities||'', vulnerabilities:data.damage_vulnerabilities||'', senses:data.senses||'', languages:data.languages||'', cr:`${data.challenge_rating||'0'}`, traits:formatAbilities(data.special_abilities), actions:formatAbilities(data.actions), reactions:formatAbilities(data.reactions), legendary:data.legendary_actions?`${data.legendary_desc}\n\n${formatAbilities(data.legendary_actions)}`:''
+            };
+        }
+
+        getSourceDisplayName(slug) {
+            const sourceNames = {'wotc-srd':'SRD 5.2', 'tob':'ToB 1', 'tob2':'ToB 2', 'cc':'Codex', 'menagerie':'Menagerie', 'blackflag':'Black Flag'};
+            return sourceNames[slug] || slug.toUpperCase();
+        }
+
+        showMonsterPreview(data) {
+            let existingModal = document.getElementById('monster-preview-modal');
+            if (existingModal) existingModal.remove();
+            const modal = document.createElement('div');
+            modal.id = 'monster-preview-modal';
+            modal.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1001; display: flex; align-items: center; justify-content: center;`;
+            modal.innerHTML = `<div style="background: var(--background-color); padding: 20px; border-radius: 10px; max-width: 600px; max-height: 80vh; overflow-y: auto;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;"><h3 style="margin: 0; color: var(--accent-color);">${data.name}</h3><button id="close-preview" style="background: none; border: none; font-size: 1.5em; cursor: pointer;">&times;</button></div><p><strong>Type:</strong> ${data.size} ${data.type}, ${data.alignment}</p><p><strong>CR:</strong> ${data.challenge_rating||'0'}</p><p><strong>AC:</strong> ${data.armor_class}</p><p><strong>HP:</strong> ${data.hit_points}</p><div style="margin-top: 15px;"><button id="load-from-preview" style="background: var(--button-color); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">Load into Editor</button></div></div>`;
+            document.body.appendChild(modal);
+            modal.querySelector('#close-preview').addEventListener('click', () => modal.remove());
+            modal.querySelector('#load-from-preview').addEventListener('click', () => { this.loadMonsterToEditor(data); modal.remove(); });
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+        }
+
+        parseCrToNumber(cr) {
+            if (!cr) return 0;
+            if (cr.includes('/')) { try { return eval(cr); } catch { return 0; } }
+            return Number(cr);
+        }
+        clearQuickCrActiveState() { this.quickCrButtons.forEach(b => b.classList.remove('active')); }
+        open() { this.modal.style.display = 'flex'; this.fetchAllMonsters(); }
+        close() { this.modal.style.display = 'none'; }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('theme') === 'modern') document.body.classList.add('theme-modern');
+        
+        // Initialize core page functions
+        initDragAndDrop(); 
+        initSaveProficiency(); 
+        setInitialSaveProficiencies(); 
+        updateModifiers();
+        
+        // Initialize the Monster Catalog
+        const catalog = new MonsterCatalog();
+        catalog.init();
+
+        // --- THIS IS THE CRITICAL FIX ---
+        // It connects the "Browse Monsters" button to the catalog's open function
+        document.getElementById('open-catalog-btn').addEventListener('click', () => catalog.open());
+        // -----------------------------------------
+
+        // Set up all other buttons and tabs
+        document.getElementById('editor-tab-btn').addEventListener('click', () => switchTab('editor'));
+        document.getElementById('markdown-tab-btn').addEventListener('click', () => switchTab('markdown'));
+        document.querySelectorAll('.ability-score input[type="number"]').forEach(input => input.addEventListener('input', updateModifiers));
+        document.getElementById('generate-card-btn').addEventListener('click', generateCard);
+        document.getElementById('export-btn').addEventListener('click', exportAsImage);
+        document.getElementById('clear-all-btn').addEventListener('click', clearAllCards);
+        
+        const pasteModal = document.getElementById('paste-monster-modal');
+        document.getElementById('paste-monster-btn').addEventListener('click', () => { pasteModal.style.display = 'block'; });
+        document.getElementById('close-paste-modal').addEventListener('click', () => { pasteModal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === pasteModal) pasteModal.style.display = 'none'; });
+        
+        document.getElementById('process-paste-btn').addEventListener('click', () => {
+            const text = document.getElementById('paste-monster-input').value;
+            const data = parseHomebreweryFormat(text);
+            if (data && Object.keys(data).length > 1) {
+                clearFormFields(); applyMonsterDataToForm(data); pasteModal.style.display = 'none'; generateCard(); switchTab('editor');
+            } else alert('Failed to parse monster data.');
+        });
+        
+        document.getElementById('import-btn').addEventListener('click', () => {
+            const markdown = document.getElementById('markdown-input').value;
+            const data = parseHomebreweryFormat(markdown);
+            if (data && Object.keys(data).length > 1) {
+                clearFormFields(); applyMonsterDataToForm(data); generateCard(); switchTab('editor');
+            } else alert('Could not parse markdown.');
+        });
+
+        document.getElementById('export-markdown-btn').addEventListener('click', () => {
+            const name = document.getElementById('monster-name').value || 'Monster';
+            const size = document.getElementById('monster-size').value || 'Medium';
+            const type = document.getElementById('monster-type').value || 'Beast';
+            const alignment = document.getElementById('monster-alignment').value || 'Unaligned';
+            document.getElementById('markdown-input').value = `## ${name}\n*${size} ${type}, ${alignment}*\n\n`;
+            switchTab('markdown');
+        });
+    });
+</script>
+</body>
+</html>
